@@ -20,7 +20,7 @@
 #define AUDIOMATH_H
 
   // array in PROGMEM for storing dB coefficients
-  #define DB_FAST_COEFFICIENT_COUNT (uint8_t)25
+  #define DB_FAST_COEFFICIENT_COUNT ((uint8_t)25U)
 
   class Audiomath {
     public:

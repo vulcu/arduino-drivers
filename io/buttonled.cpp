@@ -1,5 +1,5 @@
 /*
- * ledbutton.cpp - UI Push-button Driver w/ LED Support for Arduino
+ * buttonled.cpp - UI Push-button Driver w/ LED Support for Arduino
  * Copyright (c) 2017 Winry R. Litwa-Vulcu. All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "ledbutton.h"
+#include "buttonled.h"
 
 /**************************************************************************/
 // class constructor for LED object
@@ -98,47 +98,46 @@ bool Button::read(void) {
 /**************************************************************************/
 
 /**************************************************************************/
-// class constructor for LED_Button object
-LED_Button::LED_Button(int8_t button_pinAttachment, LED &led_Attachment) :
+// class constructor for ButtonLED object
+ButtonLED::ButtonLED(int8_t button_pinAttachment, LED &led_Attachment) :
   Button(button_pinAttachment),
-  led(led_Attachment){
-}
+  led(led_Attachment) { }
 
 // attach an LED pin and configure the LED for use
-void LED_Button::attach(const int8_t led_pin) {
+void ButtonLED::attach(const int8_t led_pin) {
   led.attach(led_pin);
 }
 
 // write a PWM brightness to the Button LED
-void LED_Button::brightness(const uint8_t value) {
+void ButtonLED::brightness(const uint8_t value) {
   led.brightness(value);
 }
 
 // disable the input pullup for the Button input
-void LED_Button::disableInputPullup(void) {
+void ButtonLED::disableInputPullup(void) {
   Button::disableInputPullup();
   led.init();
 }
 
 // enable the input pullup for the Button input
-void LED_Button::enableInputPullup(void) {
+void ButtonLED::enableInputPullup(void) {
   Button::enableInputPullup();
   led.init();
 }
 
 // initialize the hardware button and LED
-void LED_Button::init(void) {
+void ButtonLED::init(void) {
   Button::init();
   led.init();
 }
 
 // set the Button LED to OFF
-void LED_Button::off(void) {
+void ButtonLED::off(void) {
   led.off();
 }
 
 // reset the button's LED pin attachment (disables control of LED)
-void LED_Button::unattach(void) {
+void ButtonLED::unattach(void) {
   led.reset();
 }
 /**************************************************************************/

@@ -26,17 +26,17 @@
   #define DS1882_DEFAULT_I2CADDR ((uint8_t)0x28)
 
   // min/max volume level of theDS1882 potentiometer
-  #define DS1882_MINIMUM_VOL_LEVEL  (0U)
-  #define DS1882_MAXIMUM_VOL_LEVEL  (63U)
+  #define DS1882_MINIMUM_VOL_LEVEL  ((uint8_t)0U)
+  #define DS1882_MAXIMUM_VOL_LEVEL  ((uint8_t)63U)
 
   // use volatile or non-volatile memory storage
-  #define USE_VOLATILE_MEMORY_STORAGE (0U)
+  #define USE_VOLATILE_MEMORY_STORAGE ((uint8_t)0U)
 
   // enable ZCD to reduce artifacts when changing volume levels
-  #define ENABLE_ZERO_CROSSING_DETECT (0U)
+  #define ENABLE_ZERO_CROSSING_DETECT ((uint8_t)0U)
 
   // potentiometer configuration option, must be set to 1
-  #define POTENTIOMETER_CONFIG_OPTION (1U)
+  #define POTENTIOMETER_CONFIG_OPTION ((uint8_t)1U)
 
   class DS1882 {
     public:

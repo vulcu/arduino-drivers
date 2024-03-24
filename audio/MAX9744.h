@@ -22,9 +22,12 @@
   #include <avr/pgmspace.h>
   #include <Wire.h>
 
+  // default I2C address for the MAX9744
+  #define MAX9744_DEFAULT_I2CADDR ((uint8_t)0x4B)
+
   // min/max volume level of the MAX9744 amplifier
-  #define MAX9744_MINIMUM_VOL_LEVEL  (0U)
-  #define MAX9744_MAXIMUM_VOL_LEVEL  (63U)
+  #define MAX9744_MINIMUM_VOL_LEVEL  ((uint8_t)0U)
+  #define MAX9744_MAXIMUM_VOL_LEVEL  ((uint8_t)63U)
 
   class MAX9744 {
     public:

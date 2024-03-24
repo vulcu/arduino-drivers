@@ -21,8 +21,8 @@
 
 // check if an AVR sleep mode is defined for this hardware
 #if (defined(__AVR_ATmega161__ ) || defined(__AVR_ATmega162__)  || \
-    defined(__AVR_ATmega8515__) || defined(__AVR_XMEGA__)      || \
-    defined(SM2) || defined(SM1) || defined(SM))
+     defined(__AVR_ATmega8515__) || defined(__AVR_XMEGA__)      || \
+     defined(SM2) || defined(SM1) || defined(SM))
 
   #include <avr/sleep.h>
 #endif

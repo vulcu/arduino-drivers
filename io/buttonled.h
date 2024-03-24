@@ -50,9 +50,9 @@
   };
 
 
-  class LED_Button: public Button {
+  class ButtonLED: public Button {
     public:
-      LED_Button(int8_t button_pinAttachment, LED &led_Attachment);
+      ButtonLED(int8_t button_pinAttachment, LED &led_Attachment);
     
       void attach(const int8_t led_pin);
       void brightness(const uint8_t value);

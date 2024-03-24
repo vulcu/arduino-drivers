@@ -26,8 +26,8 @@
   #define CS4270_DEFAULT_I2CADDR ((uint8_t)0x48)
 
   // min/max volume level of theDS1882 potentiometer
-  #define CS4270_MINIMUM_ATTENUATION  (0U)
-  #define CS4270_MAXIMUM_ATTENUATION  (127U)
+  #define CS4270_MINIMUM_ATTENUATION  ((uint8_t)0U)
+  #define CS4270_MAXIMUM_ATTENUATION  ((uint8_t)127U)
 
   // define the CS4270 configuration register options
   #define CS4270_LOOPBACK (true)
@@ -35,15 +35,15 @@
   #define CS4270_AUTOMUTE (false)
 
   // Define CS4270 register addresses
-  #define CS4270_DEVICEID 0x01  //device ID, read-only
-  #define CS4270_PWR_CTRL 0x02  //power control
-  #define CS4270_MDE_CTRL 0x03  //mode control
-  #define CS4270_ADDACTRL 0x04  //ADC and DAC control
-  #define CS4270_TRN_CTRL 0x05  //transition control
-  #define CS4270_MTE_CTRL 0x06  //mute
-  #define CS4270_DAC_VOLA 0x07  //DAC Channel A volume
-  #define CS4270_DAC_VOLB 0x08  //DAC Channel B volume
-  #define CS4270_MAP_INCR 0x80  //I2C MAP auto-increment
+  #define CS4270_DEVICEID ((uint8_t)0x01) //device ID, read-only
+  #define CS4270_PWR_CTRL ((uint8_t)0x02) //power control
+  #define CS4270_MDE_CTRL ((uint8_t)0x03) //mode control
+  #define CS4270_ADDACTRL ((uint8_t)0x04) //ADC and DAC control
+  #define CS4270_TRN_CTRL ((uint8_t)0x05) //transition control
+  #define CS4270_MTE_CTRL ((uint8_t)0x06) //mute
+  #define CS4270_DAC_VOLA ((uint8_t)0x07) //DAC Channel A volume
+  #define CS4270_DAC_VOLB ((uint8_t)0x08) //DAC Channel B volume
+  #define CS4270_MAP_INCR ((uint8_t)0x80) //I2C MAP auto-increment
 
 
   class CS4270 {
