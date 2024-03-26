@@ -42,8 +42,8 @@
     public:
       // These are available channels for setting volume
       enum channels_t {
-        Ch_0,
-        Ch_1,
+        Mono_P0 = 0,
+        Mono_P1,
         Stereo,
       };
 

@@ -26,7 +26,12 @@ CS4270::CS4270(uint8_t i2c_addr, uint8_t enable_n, TwoWire* pWire) :
 
 // initialize and configure the device
 void CS4270::init(void) {
-   // toggle CS4270 reset line to ensure correct initialization
+  // check that TwoWire interface has been configured
+  if (TWCR == 0x00) {
+    return;
+  }
+
+  // toggle CS4270 reset line to ensure correct initialization
   digitalWrite(reset_n, LOW);
   delayMicroseconds(100);
   digitalWrite(reset_n, HIGH);
@@ -79,13 +84,13 @@ void CS4270::init(void) {
     }
   Wire.endTransmission();
 
-  //  set DAC Channel A volume control
+  // set DAC Channel A volume control
   Wire.beginTransmission(i2c_addr);
     Wire.write(CS4270_DAC_VOLA);
     Wire.write(0x00);
   Wire.endTransmission();
 
-  //  set DAC Channel B volume control
+  // set DAC Channel B volume control
   Wire.beginTransmission(i2c_addr);
     Wire.write(CS4270_DAC_VOLB);
     Wire.write(0x00);

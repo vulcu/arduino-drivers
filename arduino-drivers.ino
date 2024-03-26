@@ -21,8 +21,6 @@
 #include "io/buttonled.h"
 #include "io/buttonled.cpp"
 
-#include "memory/storage.h"
-
 #define SERIAL_TIMEOUT_MILLISECONDS (1000U)
 #define SERIAL_BAUD_RATE (115200U)
 #define I2C_CLOCK_RATE   (400000U)
