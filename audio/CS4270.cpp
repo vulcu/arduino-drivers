@@ -152,7 +152,7 @@ void CS4270::volume(uint8_t value, channels_t channel) {
       (value <= CS4270_MAXIMUM_ATTENUATION)) {
     
     switch (channel) {
-      case Ch_A: {
+      case Mono_ChA: {
         channel_attenuation[0] = value;
 
         //  set DAC Channel A volume control
@@ -163,7 +163,7 @@ void CS4270::volume(uint8_t value, channels_t channel) {
       }
       break;
 
-      case Ch_B: {
+      case Mono_ChB: {
         channel_attenuation[1] = value;
 
         //  set DAC Channel B volume control

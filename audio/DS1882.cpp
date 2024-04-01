@@ -115,7 +115,7 @@ void DS1882::volume(uint8_t value, channels_t channel) {
       (value <= DS1882_MAXIMUM_VOL_LEVEL)) {
     
     switch (channel) {
-      case Ch_0: {
+      case Mono_P0: {
         channel_attenuation[0] = value;
 
         // Set Potentiometer 0 volume to current setting
@@ -125,7 +125,7 @@ void DS1882::volume(uint8_t value, channels_t channel) {
       }
       break;
 
-      case Ch_1: {
+      case Mono_P1: {
         channel_attenuation[1] = value;
 
         // Set Potentiometer 1 volume to current setting
