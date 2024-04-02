@@ -19,14 +19,6 @@
 
 #include "BM62.h"
 
-#ifndef BM62_MODULE_PARAMETERS
-#define BM62_MODULE_PARAMETERS
-
-  #define INIT_RESET_CYCLE_WAIT_TIME_MS (uint8_t)10
-  #define TARGET_LENGTH_EQ_PRESET       (uint8_t)3
-
-#endif
-
 // BM62 UART syncword header for serial commands (probably 0xAA, may be 0x00AA)
 // < EEPROM option (0xAE @ bit 4) adds “0x00” as wakeup byte in front of start byte >
 static const uint8_t serial_uart_sync_header [1] = { 0xAA };
@@ -95,8 +87,8 @@ void BM62::init(void) {
   // initialize the BM62 programming sense line
   pinMode(prgm_sense_n, INPUT);
 
-  // determine if the BM62 is being programmed; if so, take a nap
-  isProgramMode();
+  // determine if the BM62 is being programmed, if so then halt
+  haltIfProgramMode();
 
   // input for determining if a successful A2DP connection active
   pinMode(ind_a2dp_n, INPUT_PULLUP);
@@ -226,7 +218,7 @@ uint8_t BM62::checksum(const uint8_t command[], const uint8_t command_length) {
 }
 
 // check if the BM62 was booted into flash reprogram mode
-void BM62::isProgramMode(void) {
+void BM62::haltIfProgramMode(void) {
   if (!digitalRead(prgm_sense_n)) {
     // check if an AVR sleep mode is defined for this hardware
     #if defined(USE_AVR_SLEEP_MODE)

@@ -19,13 +19,16 @@
 #ifndef MICROCHIP_BM62_H
 #define MICROCHIP_BM62_H
 
-// check if an AVR sleep mode is defined for this hardware
-#if (defined(__AVR_ATmega161__ ) || defined(__AVR_ATmega162__)  || \
-     defined(__AVR_ATmega8515__) || defined(__AVR_XMEGA__)      || \
-     defined(SM2) || defined(SM1) || defined(SM))
+  // check if an AVR sleep mode is defined for this hardware
+  #if (defined(__AVR_ATmega161__ ) || defined(__AVR_ATmega162__)  || \
+      defined(__AVR_ATmega8515__) || defined(__AVR_XMEGA__)      || \
+      defined(SM2) || defined(SM1) || defined(SM))
 
-  #include <avr/sleep.h>
-#endif
+    #include <avr/sleep.h>
+  #endif
+
+  #define INIT_RESET_CYCLE_WAIT_TIME_MS (10U)
+  #define TARGET_LENGTH_EQ_PRESET       (3U)
 
   class BM62 {
     public:
@@ -66,7 +69,7 @@
       Stream* pSerial;
 
       uint8_t checksum(const uint8_t command[], const uint8_t command_length);
-      void    isProgramMode(void);
+      void    haltIfProgramMode(void);
       void    writeSerialCommand(const uint8_t instruction[], const size_t bytes_command);
   };
 
