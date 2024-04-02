@@ -1,38 +1,38 @@
 # VSCode
 .vscode/
 
+#MacOS
+.DS_Store
+
 # Build Directory
 build/
 
 # Prerequisites
 *.d
 
-# Compiled Object files
-*.slo
-*.lo
+# Objects and Output
 *.o
-*.obj
+*.elf
+*.eep
+*.cache
+
+# Linker Output
+*.ilk
+*.map
+*.exp
 
 # Precompiled Headers
 *.gch
 *.pch
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
+# Libraries
 *.lib
+*.a
+*.la
+*.lo
 
-# Executables
-*.exe
+# Binaries
+*.bin
 *.out
 *.app
+*.hex
