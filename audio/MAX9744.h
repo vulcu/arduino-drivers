@@ -41,7 +41,7 @@
       void unmute(void);
       void volume(uint8_t value);
 
-      static inline int16_t getGainAtVolumeIndex(uint8_t index);
+      inline int16_t getGainAtVolumeIndex(uint8_t index);
 
     private:
       bool invert_mute;
