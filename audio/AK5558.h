@@ -7,39 +7,69 @@
 #define AK5558_H
 
   namespace AKM {
-    namespace AK5558Types {
-      // #define PW1_BM     (0x01 << 0)
-      // #define PW2_BM     (0x01 << 1)
-      // #define PW3_BM     (0x01 << 2)
-      // #define PW4_BM     (0x01 << 3)
-      // #define PW5_BM     (0x01 << 4)
-      // #define PW6_BM     (0x01 << 5)
-      // #define PW7_BM     (0x01 << 6)
-      // #define PW8_BM     (0x01 << 7)
+    namespace AK5558Types {        
+      /*! @enum Power Management Register */
+      enum pwrmgmt1_t {
+        PW1_BM = (0x01 << 0),  
+        PW2_BM = (0x01 << 1), 
+        PW3_BM = (0x01 << 2), 
+        PW4_BM = (0x01 << 3), 
+        PW5_BM = (0x01 << 4), 
+        PW6_BM = (0x01 << 5), 
+        PW7_BM = (0x01 << 6),  
+        PW8_BM = (0x01 << 7),  
+      };
 
-      // #define RSTN_BM    (0x01 << 0)
-      // #define MONO1_BM   (0x01 << 1)
-      // #define MONO2_BM   (0x01 << 2)
+      /*! @enum Channel Summing and Timing Reset Register */
+      enum pwrmgmt2_t {
+        RSTN_BM  = (0x01 << 0), 
+        MONO1_BM = (0x01 << 1), 
+        MONO2_BM = (0x01 << 2), 
+      };
 
-      // #define HFPE_BM    (0x01 << 0)
-      // #define DIF0_BM    (0x01 << 1)
-      // #define DIF1_BM    (0x01 << 2)
-      // #define CKS0_BM    (0x01 << 3)
-      // #define CKS1_BM    (0x01 << 4)
-      // #define CKS2_BM    (0x01 << 5)
-      // #define CKS3_BM    (0x01 << 6)
+      /*! @enum Clocking, DAI Mode, HP Filter Register */
+      enum control1_t {
+        HFPE_BM = (0x01 << 0), 
+        DIF0_BM = (0x01 << 1), 
+        DIF1_BM = (0x01 << 2), 
+        CKS0_BM = (0x01 << 3), 
+        CKS1_BM = (0x01 << 4), 
+        CKS2_BM = (0x01 << 5), 
+        CKS3_BM = (0x01 << 6), 
+      };
 
-      // #define TDM0_BM    (0x01 << 5)
-      // #define TDM1_BM    (0x01 << 6)
+      /*! @enum TDM Mode Selection Register */
+      enum control2_t {
+        TDM0_BM = (0x01 << 5), 
+        TDM1_BM = (0x01 << 6), 
+      };
 
-      // #define SLOW_BM    (0x01 << 0)
-      // #define SD_BM      (0x01 << 1)
+      /*! @enum LP Filter, DSD Mode Register */
+      enum control3_t {
+        SLOW_BM = (0x01 << 0), 
+        SD_BM   = (0x01 << 1), 
+      };
 
-      // #define DSDSEL0_BM (0x01 << 0)
-      // #define DSDSEL1_BM (0x01 << 1)
-      // #define DCKB_BM    (0x01 << 2)
-      // #define PMOD_BM    (0x01 << 3)
-      // #define DCKS_BM    (0x01 << 5)
+      /*! @enum DSD Configuration Register */
+      enum dsd_t {
+        DSDSEL0_BM = (0x01 << 0), 
+        DSDSEL1_BM = (0x01 << 1), 
+        DCKB_BM    = (0x01 << 2), 
+        PMOD_BM    = (0x01 << 3), 
+        DCKS_BM    = (0x01 << 5), 
+      };
+
+      /*! @enum AK5558 register address index */
+      enum AK5558_register_index {
+        PWRMGMT1 = 0,  //Power Management
+        PWRMGMT2,      //Channel Summing and Timing Reset
+        CONTROL1,      //Clocking, DAI Mode, HP Filter
+        CONTROL2,      //TDM Mode Selection
+        CONTROL3,      //LP Filter, DSD Mode
+        DSD,           //DSD Configuration
+        TEST1,         //Test Register (must be 0x00)
+        TEST2,         //Test Register (must be 0x00)
+      };
     }
 
     /*! @brief AKM AK5558 Analog-to-Digital Converter driver for Arduino
@@ -54,9 +84,9 @@
         * 
         * @param i2c_addr The physical device's I2C address
         * @param reset_n  The microcontroller pin connected to the device RESET_L next
-        * @param Wire     A pointer to an instance of the TwoWire class
+        * @param pWire     A pointer to an instance of the TwoWire class
         */
-        AK5558(const uint8_t i2c_addr, const uint8_t reset_n, TwoWire *Wire);
+        AK5558(const uint8_t i2c_addr, const uint8_t reset_n, TwoWire *pWire);
 
         /*! @brief  Initialize the AK5558
         *
@@ -97,23 +127,12 @@
         void unmute(void);
 
       private:
-        /*! @enum AK5558 register address index */
-        enum AK5558_register_index {
-          AK5558_PWRMGMT1 = 0,  //Power Management
-          AK5558_PWRMGMT2,      //Channel Summing and Timing Reset
-          AK5558_CONTROL1,      //Clocking, DAI Mode, HP Filter
-          AK5558_CONTROL2,      //TDM Mode Selection
-          AK5558_CONTROL3,      //LP Filter, DSD Mode
-          AK5558_DSD,           //DSD Configuration
-          AK5558_TEST1,         //Test Register (must be 0x00)
-          AK5558_TEST2,         //Test Register (must be 0x00)
-        };
-
+        bool invert_mute;
         const uint8_t i2c_address;
         const uint8_t reset_n;
-        bool invert_mute;
         uint8_t active_config[8];
-        TwoWire *Wire;
+        static const uint8_t default_config[8] PROGMEM;
+        TwoWire *pWire;
 
         /*! @brief Reset the AK5558 configuration in memory
         *
