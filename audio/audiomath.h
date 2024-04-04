@@ -22,6 +22,7 @@
   // array in PROGMEM for storing dB coefficients
   #define DB_FAST_COEFFICIENT_COUNT ((uint8_t)25U)
 
+  /// TODO: Extricate the MAX9744-specific methods and move to MAX9744 driver class
   class Audiomath {
     public:
       static void     convertVolumeToGain(const uint8_t start, const uint8_t stop, 
@@ -35,10 +36,13 @@
       static uint8_t  getVolumeMapIndx(const uint16_t audio_level, const uint16_t *dB_levels, 
                                        const size_t dB_levels_size);
       static uint32_t floatTo523(float float_value);
-    
+      static int16_t  quantizeValueToNearest(int16_t value, const uint8_t quantize_step);
+
     private:
+      /// TODO: There may be a better way to do this using static variables within functions
       static uint8_t buffer_indx_32;
       static uint8_t vm_index_previous;
+
       static const uint16_t dB_fast_coefficient[DB_FAST_COEFFICIENT_COUNT] PROGMEM;
   };
 

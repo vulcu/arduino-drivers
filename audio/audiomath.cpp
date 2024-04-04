@@ -206,3 +206,24 @@ uint32_t Audiomath::floatTo523(float float_value) {
   else
     return(positive_binary_value ^ 0xF8000000);
 }
+
+int16_t Audiomath::quantizeValueToNearest(int16_t value, const uint8_t quantize_step) {
+  int8_t modulus = (value % quantize_step);
+  if (modulus > 0) {
+    if (modulus <= (quantize_step >> 1)) {
+      value = value - (int16_t)modulus;
+    }
+    else {
+      value = value + (int16_t)(quantize_step - modulus);
+    }
+  }
+  else if (modulus < 0) {
+    if (-modulus <= (quantize_step >> 1)) {
+      value = value - (int16_t)modulus;
+    }
+    else {
+      value = value - (int16_t)(quantize_step + modulus);
+    }
+  }
+  return value;
+}
