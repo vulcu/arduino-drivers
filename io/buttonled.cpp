@@ -93,7 +93,7 @@ void Button::init(void) {
 
 // read the instantaneous value of the attached Button
 bool Button::read(void) {
-  return digitalRead(button_pin);
+  return (bool)digitalRead(button_pin);
 }
 /**************************************************************************/
 
