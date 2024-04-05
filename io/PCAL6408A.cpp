@@ -102,7 +102,7 @@ namespace NXP {
 
   void PCAL6408A::enable(void) {
     pinMode(reset_n, OUTPUT);
-    digitalWrite(reset_n, LOW);
+    digitalWrite(reset_n, HIGH);
   }
 
   bool PCAL6408A::get(register_bitmask_t input_port) {
@@ -144,7 +144,7 @@ namespace NXP {
 
   void PCAL6408A::shutdown(void) {
     pinMode(reset_n, OUTPUT);
-    digitalWrite(reset_n, HIGH);
+    digitalWrite(reset_n, LOW);
   }
 
   void PCAL6408A::resetActiveConfig(void) {

@@ -88,12 +88,12 @@ namespace AKM {
 
   void AK5558::enable(void) {
     pinMode(reset_n, OUTPUT);
-    digitalWrite(reset_n, LOW);
+    digitalWrite(reset_n, HIGH);
   }
 
   void AK5558::shutdown(void) {
     pinMode(reset_n, OUTPUT);
-    digitalWrite(reset_n, HIGH);
+    digitalWrite(reset_n, LOW);
   }
 
   void AK5558::invertMuteLogic(const bool invert_mute) {
