@@ -6,6 +6,9 @@
 #ifndef AK5558_H
 #define AK5558_H
 
+  // Power-on delay of Internal PDN release. See note 2b) on p.55 of AK5558 datasheet.
+  #define AK5558_INT_PDN_OSCCLK_DELAY_MS (10U)
+
   namespace AKM {
     namespace AK5558Types {        
       /*! @enum Power Management Register */
