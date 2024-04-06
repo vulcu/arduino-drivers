@@ -30,88 +30,91 @@ namespace NXP {
   PCAL6408A::PCAL6408A(uint8_t i2c_address, uint8_t reset_n, uint8_t interrupt_n, TwoWire *pWire) : 
                       i2c_address(i2c_address), reset_n(reset_n), interrupt_n(interrupt_n) {
     this->pWire = pWire;
-    resetActiveConfig();
+    this->resetActiveConfig();
   };
 
   void PCAL6408A::init(void) {
-    // set PCAL6408A RESET pin HIGH to put in reset
-    shutdown();
-    resetActiveConfig();
+    // set PCAL6408A RESET pin HIGH to take out of reset
+    this->shutdown();
+    delayMicroseconds(100);
+    this->enable();
+    delayMicroseconds(100);
 
     // configure output port
-    pWire->beginTransmission(i2c_address);
+    pWire->beginTransmission(this->i2c_address);
       pWire->write(OUTPUT_PORT_PTR);
-      pWire->write(pgm_read_byte(&(default_config[OUTPUT_PORT])));
+      pWire->write(pgm_read_byte(&(this->default_config[OUTPUT_PORT])));
     pWire->endTransmission();
 
     // configure polarity inversion
-    pWire->beginTransmission(i2c_address);
+    pWire->beginTransmission(this->i2c_address);
       pWire->write(POLARITY_INVERSION_PTR);
-      pWire->write(pgm_read_byte(&(default_config[POLARITY_INVERSION])));
+      pWire->write(pgm_read_byte(&(this->default_config[POLARITY_INVERSION])));
     pWire->endTransmission();
 
     // configure pin I/O direction
-    pWire->beginTransmission(i2c_address);
+    pWire->beginTransmission(this->i2c_address);
       pWire->write(CONFIGURATION_PTR);
-      pWire->write(pgm_read_byte(&(default_config[CONFIGURATION])));
+      pWire->write(pgm_read_byte(&(this->default_config[CONFIGURATION])));
     pWire->endTransmission();
 
+    /// TODO: Register writes to 0x40 and up are NACK unless register 0x03 is
+    /// configured to OUTPUT... but even if it is, writes don't work every time?
     // configure output drive strength
-    pWire->beginTransmission(i2c_address);
+    pWire->beginTransmission(this->i2c_address);
       pWire->write(DRIVE_STRENGTH_0_PTR);
-      pWire->write(pgm_read_byte(&(default_config[DRIVE_STRENGTH_0])));
+      pWire->write(pgm_read_byte(&(this->default_config[DRIVE_STRENGTH_0])));
     pWire->endTransmission();
-    pWire->beginTransmission(i2c_address);
+    pWire->beginTransmission(this->i2c_address);
       pWire->write(DRIVE_STRENGTH_1_PTR);
-      pWire->write(pgm_read_byte(&(default_config[DRIVE_STRENGTH_1])));
+      pWire->write(pgm_read_byte(&(this->default_config[DRIVE_STRENGTH_1])));
     pWire->endTransmission();
 
     // configure input port latching
-    pWire->beginTransmission(i2c_address);
+    pWire->beginTransmission(this->i2c_address);
       pWire->write(INPUT_LATCH_PTR);
-      pWire->write(pgm_read_byte(&(default_config[INPUT_LATCH])));
+      pWire->write(pgm_read_byte(&(this->default_config[INPUT_LATCH])));
     pWire->endTransmission();
 
     // configure pull-up/pull-down enable
-    pWire->beginTransmission(i2c_address);
+    pWire->beginTransmission(this->i2c_address);
       pWire->write(PULLUP_PULLDOWN_EN_PTR);
-      pWire->write(pgm_read_byte(&(default_config[PULLUP_PULLDOWN_EN])));
+      pWire->write(pgm_read_byte(&(this->default_config[PULLUP_PULLDOWN_EN])));
     pWire->endTransmission();
 
     // configure pull-up/pull-down selection
-    pWire->beginTransmission(i2c_address);
+    pWire->beginTransmission(this->i2c_address);
       pWire->write(PULLUP_PULLDOWN_SEL_PTR);
-      pWire->write(pgm_read_byte(&(default_config[PULLUP_PULLDOWN_SEL])));
+      pWire->write(pgm_read_byte(&(this->default_config[PULLUP_PULLDOWN_SEL])));
     pWire->endTransmission();
 
     // configure interrupt mask
-    pWire->beginTransmission(i2c_address);
+    pWire->beginTransmission(this->i2c_address);
       pWire->write(INTERRUPT_MASK_PTR);
-      pWire->write(pgm_read_byte(&(default_config[INTERRUPT_MASK])));
+      pWire->write(pgm_read_byte(&(this->default_config[INTERRUPT_MASK])));
     pWire->endTransmission();
 
     // configure input port
-    pWire->beginTransmission(i2c_address);
+    pWire->beginTransmission(this->i2c_address);
       pWire->write(OUTPUT_PORT_CONFIG_PTR);
-      pWire->write(pgm_read_byte(&(default_config[OUTPUT_PORT_CONFIG])));
+      pWire->write(pgm_read_byte(&(this->default_config[OUTPUT_PORT_CONFIG])));
     pWire->endTransmission();
 
-    // set PCAL6408A RESET pin Low to take out of reset
-    enable();
+    this->resetActiveConfig();
   }
 
   void PCAL6408A::enable(void) {
-    pinMode(reset_n, OUTPUT);
-    digitalWrite(reset_n, HIGH);
+    pinMode(this->reset_n, OUTPUT);
+    digitalWrite(this->reset_n, HIGH);
   }
 
   bool PCAL6408A::get(register_bitmask_t input_port) {
     // read logical state of specified port bit
-    pWire->beginTransmission(i2c_address);
+    pWire->beginTransmission(this->i2c_address);
     pWire->write(INPUT_PORT);
     pWire->endTransmission();
     delayMicroseconds(50);
-    pWire->requestFrom(i2c_address, 1U);
+    pWire->requestFrom(this->i2c_address, 1U);
     delayMicroseconds(50);
     uint8_t read_data = (uint8_t)pWire->read();
     pWire->endTransmission();
@@ -121,17 +124,17 @@ namespace NXP {
 
   void PCAL6408A::set(register_bitmask_t output_port, bool value) {
     // read logical state of specified port first to avoid overwriting data
-    pWire->beginTransmission(i2c_address);
+    pWire->beginTransmission(this->i2c_address);
     pWire->write(OUTPUT_PORT);
     pWire->endTransmission();
     delayMicroseconds(50);
-    pWire->requestFrom(i2c_address, 1U);
+    pWire->requestFrom(this->i2c_address, 1U);
     delayMicroseconds(50);
     uint8_t read_data = (uint8_t)pWire->read();
     pWire->endTransmission();
 
     // write logical state of specified port bit
-    pWire->beginTransmission(i2c_address);
+    pWire->beginTransmission(this->i2c_address);
       pWire->write(OUTPUT_PORT);
       if (value = HIGH) {
         pWire->write((read_data | output_port));
@@ -143,11 +146,11 @@ namespace NXP {
   }
 
   void PCAL6408A::shutdown(void) {
-    pinMode(reset_n, OUTPUT);
-    digitalWrite(reset_n, LOW);
+    pinMode(this->reset_n, OUTPUT);
+    digitalWrite(this->reset_n, LOW);
   }
 
   void PCAL6408A::resetActiveConfig(void) {
-    memcpy_P(active_config, default_config, sizeof(default_config));
+    memcpy_P(this->active_config, this->default_config, sizeof(this->default_config));
   }
 }
