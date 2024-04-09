@@ -19,12 +19,11 @@
 #include "MSGEQ7.h"
 
 // class constructor for MSGEQ7 object
-MSGEQ7::MSGEQ7(uint8_t strobe_p, uint8_t dc_out, uint8_t reset_p, bool isInputPullup) {
-  this->strobe_p = strobe_p;
-  this->dc_out = dc_out;
-  this->reset_p = reset_p;
-  this->isInputPullup = isInputPullup;
-}
+MSGEQ7::MSGEQ7(uint8_t strobe_p, uint8_t dc_out, uint8_t reset_p, bool use_input_pullup) :
+  strobe_p(strobe_p), 
+  dc_out(dc_out), 
+  reset_p(reset_p), 
+  use_input_pullup(use_input_pullup) { }
 
 // initialize the MSGEQ7 reset and strobe signals
 void MSGEQ7::init(void) {
@@ -35,7 +34,7 @@ void MSGEQ7::init(void) {
   digitalWrite(strobe_p, HIGH);
   digitalWrite(reset_p, HIGH);
 
-  if (isInputPullup) {
+  if (use_input_pullup) {
     // initialize analog input 1 with internal pullup active
     digitalWrite(dc_out, INPUT_PULLUP);
   }
