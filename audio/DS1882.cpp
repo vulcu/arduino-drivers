@@ -19,18 +19,15 @@
 #include "DS1882.h"
 
 // class constructor for DS1882 object
-DS1882::DS1882(uint8_t i2c_addr, uint8_t enable_n, TwoWire* pWire) : 
-  i2c_addr(i2c_addr), enable_n(enable_n), channel_attenuation({0U}) {
+DS1882::DS1882(uint8_t i2c_address, uint8_t enable_n, TwoWire* pWire) : 
+  i2c_address(i2c_address), 
+  enable_n(enable_n), 
+  channel_attenuation({0U}) {
   this->pWire = pWire;
 }
 
 // initialize and configure the device
 void DS1882::init(void) {
-  // check that TwoWire interface has been configured
-  if (TWCR == 0x00) {
-    return;
-  }
-
   // toggle DS1882 reset line to ensure correct initialization
   digitalWrite(enable_n, LOW);
   delayMicroseconds(100);
@@ -40,12 +37,12 @@ void DS1882::init(void) {
   delayMicroseconds(100);
   
   // Set Potentiometer 0 volume to zero
-  Wire.beginTransmission(i2c_addr);
+  Wire.beginTransmission(i2c_address);
     Wire.write(0x00 + DS1882_MINIMUM_VOL_LEVEL);     // register address and data
   Wire.endTransmission();
 
   // Set Potentiometer 1 volume to zero
-  Wire.beginTransmission(i2c_addr);
+  Wire.beginTransmission(i2c_address);
     Wire.write(0x40 + DS1882_MINIMUM_VOL_LEVEL);     // register address and data
   Wire.endTransmission();
   
@@ -53,7 +50,7 @@ void DS1882::init(void) {
   const uint8_t configuration_register = 0x80 + (USE_VOLATILE_MEMORY_STORAGE << 2) + 
     (ENABLE_ZERO_CROSSING_DETECT << 1) + (POTENTIOMETER_CONFIG_OPTION - 1);
   
-  Wire.beginTransmission(i2c_addr);
+  Wire.beginTransmission(i2c_address);
     Wire.write(configuration_register); // register address and data
   Wire.endTransmission();
 }
@@ -70,46 +67,32 @@ void DS1882::shutdown(void) {
 
 // mute the DS1882 by setting maximum attenuation
 void DS1882::mute(void) {
-  // check that TwoWire interface has been configured
-  if (TWCR == 0x00) {
-    return;
-  }
-
   // Set Potentiometer 0 volume to zero
-  Wire.beginTransmission(i2c_addr);
+  Wire.beginTransmission(i2c_address);
     Wire.write(0x00 + DS1882_MINIMUM_VOL_LEVEL);  // register address and data
   Wire.endTransmission();
 
   // Set Potentiometer 1 volume to zero
-  Wire.beginTransmission(i2c_addr);
+  Wire.beginTransmission(i2c_address);
     Wire.write(0x40 + DS1882_MINIMUM_VOL_LEVEL);  // register address and data
   Wire.endTransmission();
 }
 
 // unmute the DS1882 amplifier by restoring previous attenuation
 void DS1882::unmute(void) {
-  // check that TwoWire interface has been configured
-  if (TWCR == 0x00) {
-    return;
-  }
-
   // Set Potentiometer 0 volume to current setting
-  Wire.beginTransmission(i2c_addr);
+  Wire.beginTransmission(i2c_address);
     Wire.write(0x00 + channel_attenuation[0]);  // register address and data
   Wire.endTransmission();
 
   // Set Potentiometer 1 volume to current setting
-  Wire.beginTransmission(i2c_addr);
+  Wire.beginTransmission(i2c_address);
     Wire.write(0x40 + channel_attenuation[1]);  // register address and data
   Wire.endTransmission();
 }
 
 // set the potentiometers to a value between 0 [min] and 63 [max]
 void DS1882::volume(uint8_t value, channels_t channel) {
-  if (TWCR == 0x00) {
-    return;
-  }
-
   // if the value and channel are within allowable range
   if ((value >= DS1882_MINIMUM_VOL_LEVEL) &&
       (value <= DS1882_MAXIMUM_VOL_LEVEL)) {
@@ -119,7 +102,7 @@ void DS1882::volume(uint8_t value, channels_t channel) {
         channel_attenuation[0] = value;
 
         // Set Potentiometer 0 volume to current setting
-        Wire.beginTransmission(i2c_addr);
+        Wire.beginTransmission(i2c_address);
           Wire.write(0x00 + channel_attenuation[0]);  // register address and data
         Wire.endTransmission();
       }
@@ -129,7 +112,7 @@ void DS1882::volume(uint8_t value, channels_t channel) {
         channel_attenuation[1] = value;
 
         // Set Potentiometer 1 volume to current setting
-        Wire.beginTransmission(i2c_addr);
+        Wire.beginTransmission(i2c_address);
           Wire.write(0x40 + channel_attenuation[1]);  // register address and data
         Wire.endTransmission();
       }
@@ -139,12 +122,12 @@ void DS1882::volume(uint8_t value, channels_t channel) {
         memset(channel_attenuation, value, sizeof(channel_attenuation));
 
         // Set Potentiometer 0 volume to current setting
-        Wire.beginTransmission(i2c_addr);
+        Wire.beginTransmission(i2c_address);
           Wire.write(0x00 + channel_attenuation[0]);  // register address and data
         Wire.endTransmission();
 
         // Set Potentiometer 1 volume to current setting
-        Wire.beginTransmission(i2c_addr);
+        Wire.beginTransmission(i2c_address);
           Wire.write(0x40 + channel_attenuation[1]);  // register address and data
         Wire.endTransmission();
       }
