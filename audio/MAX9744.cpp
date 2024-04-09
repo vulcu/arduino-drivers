@@ -49,6 +49,7 @@ namespace MAX9744 {
     i2c_address(i2c_address), 
     mute_p(mute_p), 
     shutdown_n(shutdown_n) {
+    this->shutdown();
     this->pWire = pWire;
   }
 

@@ -54,6 +54,7 @@ BM62::BM62(uint8_t prgm_sense_n, uint8_t reset_n, uint8_t ind_a2dp_n, Stream *pS
   prgm_sense_n(prgm_sense_n), 
   reset_n(reset_n), 
   ind_a2dp_n(ind_a2dp_n) {
+  this->reset();
   // HardwareSerial object for UART communication
   this->pSerial = pSerial;
 }

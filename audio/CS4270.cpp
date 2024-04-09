@@ -26,6 +26,7 @@ namespace CS4270 {
     i2c_address(i2c_address), 
     reset_n(enable_n), 
     channel_attenuation({0U}) {
+    this->shutdown();
     this->pWire = pWire;
   }
 

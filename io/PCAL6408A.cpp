@@ -31,6 +31,7 @@ namespace PCAL6408A {
     i2c_address(i2c_address), 
     reset_n(reset_n), 
     interrupt_n(interrupt_n) {
+    this->shutdown();
     this->pWire = pWire;
     this->resetActiveConfig();
   };
