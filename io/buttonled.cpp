@@ -20,14 +20,13 @@
 
 /**************************************************************************/
 // class constructor for LED object
-LED::LED(int8_t led_pinAttachment) :
-  led_pin(led_pinAttachment) {
-}
+LED::LED(int8_t led_pin) :
+  led_pin(led_pin) { }
 
 // attach the LED to a hardware pin
-void LED::attach(const int8_t led_pinAttachment) {
-  this->led_pin = led_pinAttachment;
-  init();
+void LED::attach(const int8_t led_pin) {
+  this->led_pin = led_pin;
+  this->init();
 }
 
 // write LED PWM value (0-255)
@@ -41,7 +40,7 @@ void LED::brightness(const uint8_t value) {
 // configure the port and set initial LED state to OFF
 void LED::init(void) {
   pinMode(led_pin, OUTPUT);
-  off();
+  this->off();
 }
 
 // set the LED to OFF
@@ -62,28 +61,27 @@ void LED::on(void) {
 
 // turn the LED off and clear the pin attachment
 void LED::reset(void) {
-  off();
+  this->off();
   this->led_pin = -1;
 }
 /**************************************************************************/
 
 /**************************************************************************/
 // class constructor for Button object
-Button::Button(uint8_t button_pinAttachment) :
-  button_pin(button_pinAttachment),
-  button_port_input_mode(INPUT) {
-}
+Button::Button(uint8_t button_pin) :
+  button_pin(button_pin),
+  button_port_input_mode(INPUT) { }
 
 // disable the input pullup for the attached pin
 void Button::disableInputPullup(void) {
   button_port_input_mode = INPUT;
-  init();
+  this->init();
 }
 
 // enable the input pullup for the attached pin
 void Button::enableInputPullup(void) {
   button_port_input_mode = INPUT_PULLUP;
-  init();
+  this->init();
 }
 
 void Button::init(void) {
@@ -99,9 +97,9 @@ bool Button::read(void) {
 
 /**************************************************************************/
 // class constructor for ButtonLED object
-ButtonLED::ButtonLED(int8_t button_pinAttachment, LED &led_Attachment) :
-  Button(button_pinAttachment),
-  led(led_Attachment) { }
+ButtonLED::ButtonLED(int8_t button_pin, LED &led) :
+  Button(button_pin),
+  led(led) { }
 
 // attach an LED pin and configure the LED for use
 void ButtonLED::attach(const int8_t led_pin) {

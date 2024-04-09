@@ -23,7 +23,7 @@
     public:
       LED(int8_t led_pinAttachment);
 
-      void attach(const int8_t led_pinAttachment);
+      void attach(const int8_t led_pin);
       void brightness(const uint8_t value);
       void init(void);
       void off(void);
@@ -37,7 +37,7 @@
 
   class Button {
     public:
-      Button(uint8_t button_pinAttachment);
+      Button(uint8_t button_pin);
 
       void disableInputPullup(void);
       void enableInputPullup(void);
@@ -52,7 +52,7 @@
 
   class ButtonLED: public Button {
     public:
-      ButtonLED(int8_t button_pinAttachment, LED &led_Attachment);
+      ButtonLED(int8_t button_pin, LED &led);
     
       void attach(const int8_t led_pin);
       void brightness(const uint8_t value);
