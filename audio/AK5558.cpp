@@ -25,17 +25,15 @@ namespace AKM {
 
 
   AK5558::AK5558(uint8_t i2c_address, uint8_t reset_n, TwoWire *pWire) :
-                invert_mute(false), i2c_address(i2c_address), reset_n(reset_n) {
+    invert_mute(false), 
+    i2c_address(i2c_address), 
+    reset_n(reset_n) {
     this->pWire = pWire;
     this->resetActiveConfig();
   }
 
+  /// TODO: make audio IO configurable during init instead of defaulting to TDM256
   void AK5558::init(void) {
-    // check that TwoWire interface has been configured
-    if (TWCR == 0x00) {
-      return;
-    }
-
     // delay AK5558 enable to ensure correct initialization (datasheet pp.55-56)
     this->shutdown();
     delayMicroseconds(100);
@@ -89,21 +87,11 @@ namespace AKM {
   }
 
   void AK5558::enable(void) {
-    // check that TwoWire interface has been configured
-    if (TWCR == 0x00) {
-      return;
-    }
-
     pinMode(this->reset_n, OUTPUT);
     digitalWrite(this->reset_n, HIGH);
   }
 
   void AK5558::shutdown(void) {
-    // check that TwoWire interface has been configured
-    if (TWCR == 0x00) {
-      return;
-    }
-
     pinMode(this->reset_n, OUTPUT);
     digitalWrite(this->reset_n, LOW);
   }
@@ -113,11 +101,6 @@ namespace AKM {
   }
 
   void AK5558::mute(void) {
-    // check that TwoWire interface has been configured
-    if (TWCR == 0x00) {
-      return;
-    }
-
     // if the mute signal is inverted then clear control bit to mute
     if (this->invert_mute) {
       // TODO: mute device by setting bit LOW
@@ -128,11 +111,6 @@ namespace AKM {
   }
 
   void AK5558::unmute(void) {
-    // check that TwoWire interface has been configured
-    if (TWCR == 0x00) {
-      return;
-    }
-
     // if the mute signal is inverted then set control bit to unmute
     if (this->invert_mute) {
       // TODO: unmute device by setting bit HIGH

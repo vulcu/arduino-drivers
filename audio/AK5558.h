@@ -10,7 +10,7 @@
   #define AK5558_INT_PDN_OSCCLK_DELAY_MS (10U)
 
   namespace AKM {
-    namespace AK5558Types {        
+    namespace AK5558Types {
       /*! @enum Power Management Register */
       enum pwrmgmt1_t {
         PW1_BM = (0x01 << 0),  
@@ -85,11 +85,11 @@
         *
         * @details A more elaborate description of the constructor.
         * 
-        * @param i2c_addr The physical device's I2C address
-        * @param reset_n  The microcontroller pin connected to the device RESET_L next
-        * @param pWire     A pointer to an instance of the TwoWire class
+        * @param i2c_address The physical device's I2C address
+        * @param reset_n     The microcontroller pin connected to the device RESET_L next
+        * @param pWire       A pointer to an instance of the TwoWire class
         */
-        AK5558(const uint8_t i2c_addr, const uint8_t reset_n, TwoWire *pWire);
+        AK5558(const uint8_t i2c_address, const uint8_t reset_n, TwoWire *pWire);
 
         /*! @brief  Initialize the AK5558
         *
