@@ -50,14 +50,10 @@ static const uint8_t BM62_EQ_USER1     [3] = { 0x1C, 0x0A, 0xFF };
 // < MMI action 0x5D: fast enter pairing mode (from non-off mode) >
 static const uint8_t BM62_EnterPairingMode [3] = { 0x02, 0x00, 0x5D };
 
-BM62::BM62(uint8_t prgm_sense_n, uint8_t reset_n, uint8_t ind_a2dp_n, 
-    Stream *pSerial) {
-  // GPIO for reading if the BM62 module was booted into flash reprogram mode
-  this->prgm_sense_n = prgm_sense_n;
-  // GPIO for resetting BM62 module
-  this->reset_n = reset_n;
-  // GPIO for reading A2DP profile connection status
-  this->ind_a2dp_n = ind_a2dp_n;
+BM62::BM62(uint8_t prgm_sense_n, uint8_t reset_n, uint8_t ind_a2dp_n, Stream *pSerial) :
+  prgm_sense_n(prgm_sense_n), 
+  reset_n(reset_n), 
+  ind_a2dp_n(ind_a2dp_n) {
   // HardwareSerial object for UART communication
   this->pSerial = pSerial;
 }

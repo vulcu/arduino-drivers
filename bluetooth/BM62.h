@@ -47,6 +47,15 @@
         EQ_Custom,
       };
 
+      /*! @brief Class constructor
+        *
+        * @details A more elaborate description of the constructor.
+        * 
+        * @param prgm_sense_n  Pin number for senseing if BM62 module was booted into flash reprogram mode
+        * @param reset_n       Pin number for resetting BM62 module
+        * @param ind_a2dp_n    Pin number for reading A2DP profile connection status
+        * @param pSerial       A pointer to an instance of the Stream class
+        */
       BM62(uint8_t prgm_sense_n, uint8_t reset_n, uint8_t ind_a2dp_n, Stream *pSerial);
 
       void enable(void);
@@ -63,9 +72,10 @@
       void next(void);
 
     private:
-      uint8_t prgm_sense_n;
-      uint8_t reset_n;
-      uint8_t ind_a2dp_n;
+      // 
+      const uint8_t prgm_sense_n;
+      const uint8_t reset_n;
+      const uint8_t ind_a2dp_n;
       Stream* pSerial;
 
       uint8_t checksum(const uint8_t command[], const uint8_t command_length);
