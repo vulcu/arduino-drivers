@@ -7,7 +7,7 @@
 #include <Wire.h>
 #include "PCAL6408A.h"
 
-namespace NXP {
+namespace PCAL6408A {
   using namespace PCAL6408ATypes;
 
   // PCAL6408A default register values for initialization
@@ -35,7 +35,7 @@ namespace NXP {
     this->resetActiveConfig();
   };
 
-  void PCAL6408A::init(void) {
+  bool PCAL6408A::init(void) {
     // set PCAL6408A RESET pin HIGH to take out of reset
     this->shutdown();
     delayMicroseconds(100);
@@ -43,72 +43,85 @@ namespace NXP {
     delayMicroseconds(100);
 
     // configure output port
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(OUTPUT_PORT_PTR);
-      pWire->write(pgm_read_byte(&(this->default_config[OUTPUT_PORT])));
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(OUTPUT_PORT_PTR);
+      this->pWire->write(pgm_read_byte(&(this->default_config[OUTPUT_PORT])));
+    twi_error_type_t error = (twi_error_type_t)this->pWire->endTransmission();
+    
+    // use the first TwoWire transaction during init to check if communication is working
+    if (error == NACK_ADDRESS) {
+      return false;
+    }
 
     // configure polarity inversion
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(POLARITY_INVERSION_PTR);
-      pWire->write(pgm_read_byte(&(this->default_config[POLARITY_INVERSION])));
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(POLARITY_INVERSION_PTR);
+      this->pWire->write(pgm_read_byte(&(this->default_config[POLARITY_INVERSION])));
+    this->pWire->endTransmission();
 
     // configure pin I/O direction
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(CONFIGURATION_PTR);
-      pWire->write(pgm_read_byte(&(this->default_config[CONFIGURATION])));
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(CONFIGURATION_PTR);
+      this->pWire->write(pgm_read_byte(&(this->default_config[CONFIGURATION])));
+    this->pWire->endTransmission();
 
     /// TODO: Register writes to 0x40 and up are NACK unless register 0x03 is
     /// configured to OUTPUT... but even if it is, writes don't work every time?
     // configure output drive strength
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(DRIVE_STRENGTH_0_PTR);
-      pWire->write(pgm_read_byte(&(this->default_config[DRIVE_STRENGTH_0])));
-    pWire->endTransmission();
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(DRIVE_STRENGTH_1_PTR);
-      pWire->write(pgm_read_byte(&(this->default_config[DRIVE_STRENGTH_1])));
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(DRIVE_STRENGTH_0_PTR);
+      this->pWire->write(pgm_read_byte(&(this->default_config[DRIVE_STRENGTH_0])));
+    this->pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(DRIVE_STRENGTH_1_PTR);
+      this->pWire->write(pgm_read_byte(&(this->default_config[DRIVE_STRENGTH_1])));
+    this->pWire->endTransmission();
 
     // configure input port latching
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(INPUT_LATCH_PTR);
-      pWire->write(pgm_read_byte(&(this->default_config[INPUT_LATCH])));
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(INPUT_LATCH_PTR);
+      this->pWire->write(pgm_read_byte(&(this->default_config[INPUT_LATCH])));
+    this->pWire->endTransmission();
 
     // configure pull-up/pull-down enable
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(PULLUP_PULLDOWN_EN_PTR);
-      pWire->write(pgm_read_byte(&(this->default_config[PULLUP_PULLDOWN_EN])));
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(PULLUP_PULLDOWN_EN_PTR);
+      this->pWire->write(pgm_read_byte(&(this->default_config[PULLUP_PULLDOWN_EN])));
+    this->pWire->endTransmission();
 
     // configure pull-up/pull-down selection
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(PULLUP_PULLDOWN_SEL_PTR);
-      pWire->write(pgm_read_byte(&(this->default_config[PULLUP_PULLDOWN_SEL])));
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(PULLUP_PULLDOWN_SEL_PTR);
+      this->pWire->write(pgm_read_byte(&(this->default_config[PULLUP_PULLDOWN_SEL])));
+    this->pWire->endTransmission();
 
     // configure interrupt mask
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(INTERRUPT_MASK_PTR);
-      pWire->write(pgm_read_byte(&(this->default_config[INTERRUPT_MASK])));
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(INTERRUPT_MASK_PTR);
+      this->pWire->write(pgm_read_byte(&(this->default_config[INTERRUPT_MASK])));
+    this->pWire->endTransmission();
 
     // configure input port
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(OUTPUT_PORT_CONFIG_PTR);
-      pWire->write(pgm_read_byte(&(this->default_config[OUTPUT_PORT_CONFIG])));
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(OUTPUT_PORT_CONFIG_PTR);
+      this->pWire->write(pgm_read_byte(&(this->default_config[OUTPUT_PORT_CONFIG])));
+    this->pWire->endTransmission();
 
     this->resetActiveConfig();
+
+    // initialization was successful
+    return true;
   }
 
   void PCAL6408A::enable(void) {
     pinMode(this->reset_n, OUTPUT);
     digitalWrite(this->reset_n, HIGH);
   }
+  
+  void PCAL6408A::shutdown(void) {
+      pinMode(this->reset_n, OUTPUT);
+      digitalWrite(this->reset_n, LOW);
+    }
 
   uint8_t PCAL6408A::readInput(void) {
     return this->getRegister(INPUT_PORT_PTR);
@@ -160,38 +173,38 @@ namespace NXP {
 
   uint8_t PCAL6408A::getRegister(register_pointer_t register_pointer) {
     // read logical state of specified port bit
-    pWire->beginTransmission(this->i2c_address);
-    pWire->write(register_pointer);
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+    this->pWire->write(register_pointer);
+    this->pWire->endTransmission();
     delayMicroseconds(50);
-    pWire->requestFrom(this->i2c_address, 1U);
+    this->pWire->requestFrom(this->i2c_address, 1U);
     delayMicroseconds(50);
-    uint8_t read_data = (uint8_t)pWire->read();
-    pWire->endTransmission();
+    uint8_t read_data = (uint8_t)this->pWire->read();
+    this->pWire->endTransmission();
 
     return read_data;
   }
 
   bool PCAL6408A::getRegisterBit(register_pointer_t register_pointer, register_bitmask_t bitmask) {
     // read logical state of specified port bit
-    pWire->beginTransmission(this->i2c_address);
-    pWire->write(register_pointer);
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+    this->pWire->write(register_pointer);
+    this->pWire->endTransmission();
     delayMicroseconds(50);
-    pWire->requestFrom(this->i2c_address, 1U);
+    this->pWire->requestFrom(this->i2c_address, 1U);
     delayMicroseconds(50);
-    uint8_t read_data = (uint8_t)pWire->read();
-    pWire->endTransmission();
+    uint8_t read_data = (uint8_t)this->pWire->read();
+    this->pWire->endTransmission();
 
     return (bool)((read_data & bitmask) >> bitmask);
   }
 
   void PCAL6408A::setRegister(register_pointer_t register_pointer, uint8_t value) {
     // write logical state of entire specified register
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(register_pointer);
-      pWire->write(value);
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(register_pointer);
+      this->pWire->write(value);
+    this->pWire->endTransmission();
   }
 
   void PCAL6408A::setRegisterBit(register_pointer_t register_pointer, register_bitmask_t bitmask, bool value) {
@@ -199,20 +212,15 @@ namespace NXP {
     uint8_t read_data = this->getRegister(register_pointer);
 
     // write logical state of specified port bit
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(register_pointer);
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(register_pointer);
       if (value = HIGH) {
-        pWire->write((read_data | bitmask));
+        this->pWire->write((read_data | bitmask));
       }
       else {
-        pWire->write((read_data & ~bitmask));
+        this->pWire->write((read_data & ~bitmask));
       }
-    pWire->endTransmission();
-  }
-
-  void PCAL6408A::shutdown(void) {
-    pinMode(this->reset_n, OUTPUT);
-    digitalWrite(this->reset_n, LOW);
+    this->pWire->endTransmission();
   }
 
   void PCAL6408A::resetActiveConfig(void) {

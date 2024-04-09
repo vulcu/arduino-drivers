@@ -6,7 +6,10 @@
 #ifndef PCAL6408A_H
 #define PCAL6408A_H
 
-  namespace NXP {
+  // define the PCAL6408A I2C address, by default is hardware configured to 0x20
+  #define AK5558_DEFAULT_I2CADDR (0x20)
+
+  namespace PCAL6408A {
     namespace PCAL6408ATypes {
       /*! @enum PCAL6408A current control register bitmasks */
       typedef enum current_control_bitmask_t {
@@ -32,21 +35,31 @@
         OUTPUT_PORT_CONFIG_PTR  = 0x4F, // Set Outputs as Push/Pull or OD
       };
 
-      /*! @enum PCAL6408A register names*/
-        typedef enum register_name_t {
-          INPUT_PORT          = 0,  // Input Port Register (Read-Only)
-          OUTPUT_PORT,              // Output Port Register
-          POLARITY_INVERSION,       // Polarity Inversion (Input Only)
-          CONFIGURATION,            // Pin Direction (I/O) Configuration
-          DRIVE_STRENGTH_0,         // Output Drive Strength (Port 0-3)
-          DRIVE_STRENGTH_1,         // Output Drive Strength (Port 4-7)
-          INPUT_LATCH,              // Enable/Disable Input Pin Latching
-          PULLUP_PULLDOWN_EN,       // Enable/Disable Pin PU/PD Resistor
-          PULLUP_PULLDOWN_SEL,      // Configure Pin PU/PD Resistor Mode
-          INTERRUPT_MASK,           // Enable/Disable Interrupts Per-Pin
-          INTERRUPT_STATUS,         // Interrupt Status (Read-Only)
-          OUTPUT_PORT_CONFIG,       // Set Outputs as Push/Pull or OD
-        };
+      /*! @enum PCAL6408A register names */
+      typedef enum register_name_t {
+        INPUT_PORT          = 0,  // Input Port Register (Read-Only)
+        OUTPUT_PORT,              // Output Port Register
+        POLARITY_INVERSION,       // Polarity Inversion (Input Only)
+        CONFIGURATION,            // Pin Direction (I/O) Configuration
+        DRIVE_STRENGTH_0,         // Output Drive Strength (Port 0-3)
+        DRIVE_STRENGTH_1,         // Output Drive Strength (Port 4-7)
+        INPUT_LATCH,              // Enable/Disable Input Pin Latching
+        PULLUP_PULLDOWN_EN,       // Enable/Disable Pin PU/PD Resistor
+        PULLUP_PULLDOWN_SEL,      // Configure Pin PU/PD Resistor Mode
+        INTERRUPT_MASK,           // Enable/Disable Interrupts Per-Pin
+        INTERRUPT_STATUS,         // Interrupt Status (Read-Only)
+        OUTPUT_PORT_CONFIG,       // Set Outputs as Push/Pull or OD
+      };
+
+      /*! @enum TwoWire error types */
+      typedef enum twi_error_type_t {
+        NO_ERROR = 0,
+        TX_BUFFER_OVERFLOW, 
+        NACK_ADDRESS, 
+        NACK_DATA, 
+        OTHER, 
+        TIME_OUT
+      };
     }
 
     class PCAL6408A {
@@ -88,7 +101,7 @@
         * 
         * @warning This will reset all device registers to the default configuration 
         */
-        void init(void);
+        bool init(void);
 
         /*! @brief  Enable the PCAL6408A by taking it out of reset
         *
