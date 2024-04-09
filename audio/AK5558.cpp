@@ -28,6 +28,7 @@ namespace AK5558 {
     invert_mute(false), 
     i2c_address(i2c_address), 
     reset_n(reset_n) {
+    this->shutdown();
     this->pWire = pWire;
     this->resetActiveConfig();
   }
@@ -38,7 +39,7 @@ namespace AK5558 {
     this->shutdown();
     delayMicroseconds(100);
     this->enable();
-    delay(AK5558_INT_PDN_OSCCLK_DELAY_MS);
+    delayMicroseconds(AK5558_INT_PDN_OSCCLK_DELAY_MICROS);
 
     // set power management for channels 1-8 to OFF state (0)
     this->pWire->beginTransmission(this->i2c_address);

@@ -7,10 +7,10 @@
 #define AK5558_H
 
   // Power-on delay of Internal PDN release. See note 2b) on p.55 of AK5558 datasheet.
-  #define AK5558_INT_PDN_OSCCLK_DELAY_MS (10U)
+  #define AK5558_INT_PDN_OSCCLK_DELAY_MICROS (850U)
 
   // define the AK5558 I2C address, by default is hardware configured to 0x11
-  #define AK5558_DEFAULT_I2CADDR (0x11)
+  #define AK5558_DEFAULT_I2CADDR (0x10)
 
   namespace AK5558 {
     namespace AK5558Types {
