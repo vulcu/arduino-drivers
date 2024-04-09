@@ -65,8 +65,8 @@ void BM62::enable(void) {
 
 // put the BM62 back into pairing mode to permit pairing to new device
 void BM62::enterPairingMode(void) {
-  if (isConnected()) {
-    writeSerialCommand(BM62_EnterPairingMode, sizeof(BM62_EnterPairingMode));
+  if (this->isConnected()) {
+    this->writeSerialCommand(BM62_EnterPairingMode, sizeof(BM62_EnterPairingMode));
   }
 }
 
@@ -74,17 +74,17 @@ void BM62::enterPairingMode(void) {
 void BM62::init(void) {
   // initialize the BM62 reset line and ensure reset is asserted
   pinMode(reset_n, OUTPUT);
-  reset();
+  this->reset();
 
   // wait predefined number of ms, then take the BM62 out of reset
   delay(INIT_RESET_CYCLE_WAIT_TIME_MS);
-  enable();
+  this->enable();
   
   // initialize the BM62 programming sense line
   pinMode(prgm_sense_n, INPUT);
 
   // determine if the BM62 is being programmed, if so then halt
-  haltIfProgramMode();
+  this->haltIfProgramMode();
 
   // input for determining if a successful A2DP connection active
   pinMode(ind_a2dp_n, INPUT_PULLUP);
@@ -153,50 +153,50 @@ void BM62::setEqualizerPreset(eq_preset_t preset) {
       return; // if we're here something went wrong so don't send a command
     } break;
   }
-  if (isConnected()) {
-    writeSerialCommand(BM62_EQ_Preset, sizeof(BM62_EQ_Preset));
+  if (this->isConnected()) {
+    this->writeSerialCommand(BM62_EQ_Preset, sizeof(BM62_EQ_Preset));
   }
 }
 
 // start playback from bluetooth-connected media device
 void BM62::play(void) {
-  if (isConnected()) {
-    writeSerialCommand(BM62_Play, sizeof(BM62_Play));
+  if (this->isConnected()) {
+    this->writeSerialCommand(BM62_Play, sizeof(BM62_Play));
   }
 }
 
 // pause playback from bluetooth-connected media device
 void BM62::pause(void) {
-  if (isConnected()) {
-    writeSerialCommand(BM62_Pause, sizeof(BM62_Pause));
+  if (this->isConnected()) {
+    this->writeSerialCommand(BM62_Pause, sizeof(BM62_Pause));
   }
 }
 
 // media playback play/pause toggle (pauses if playing, plays if paused)
 void BM62::playPauseToggle(void) {
-  if (isConnected()) {
-    writeSerialCommand(BM62_Play_Toggle, sizeof(BM62_Play_Toggle));
+  if (this->isConnected()) {
+    this->writeSerialCommand(BM62_Play_Toggle, sizeof(BM62_Play_Toggle));
   }
 }
 
 // stop playback from bluetooth-connected media device
 void BM62::stop(void) {
-  if (isConnected()) {
-    writeSerialCommand(BM62_Stop, sizeof(BM62_Stop));
+  if (this->isConnected()) {
+    this->writeSerialCommand(BM62_Stop, sizeof(BM62_Stop));
   }
 }
 
 // go to previous track on bluetooth-connected media device
 void BM62::previous(void) {
-  if (isConnected()) {
-    writeSerialCommand(BM62_Prev_Track, sizeof(BM62_Prev_Track));
+  if (this->isConnected()) {
+    this->writeSerialCommand(BM62_Prev_Track, sizeof(BM62_Prev_Track));
   }
 }
 
 // go to next track on bluetooth-connected media device
 void BM62::next(void) {
-  if (isConnected()) {
-    writeSerialCommand(BM62_Next_Track, sizeof(BM62_Next_Track));
+  if (this->isConnected()) {
+    this->writeSerialCommand(BM62_Next_Track, sizeof(BM62_Next_Track));
   }
 }
 
@@ -263,17 +263,17 @@ void BM62::writeSerialCommand(const uint8_t instruction[], const size_t bytes_co
   indx += bytes_command;
 
   // calculate the checksum and write this value to the last element of the command buffer
-  command[indx] = checksum(command, indx);
+  command[indx] = this->checksum(command, indx);
 
   // write the command buffer to the serial output
-  pSerial->write(command, sizeof(command));
+  this->pSerial->write(command, sizeof(command));
 
-#ifdef DEBUG_BM62_SERIAL
-  pSerial->print("\n");
-  pSerial->print("--\n");
-  for (uint8_t k = 0; k < sizeof(command); k++) {
-    pSerial->println(command[k], HEX);
-  }
-  pSerial->print("--\n");
-#endif
+  #ifdef DEBUG_BM62_SERIAL
+    this->pSerial->print("\n");
+    this->pSerial->print("--\n");
+    for (uint8_t k = 0; k < sizeof(command); k++) {
+      this->pSerial->println(command[k], HEX);
+    }
+    this->pSerial->print("--\n");
+  #endif
 }
