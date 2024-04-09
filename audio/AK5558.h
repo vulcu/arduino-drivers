@@ -9,7 +9,10 @@
   // Power-on delay of Internal PDN release. See note 2b) on p.55 of AK5558 datasheet.
   #define AK5558_INT_PDN_OSCCLK_DELAY_MS (10U)
 
-  namespace AKM {
+  // define the AK5558 I2C address, by default is hardware configured to 0x11
+  #define AK5558_DEFAULT_I2CADDR (0x11)
+
+  namespace AK5558 {
     namespace AK5558Types {
       /*! @enum Power Management Register */
       enum pwrmgmt1_t {
@@ -73,6 +76,16 @@
         TEST1,         //Test Register (must be 0x00)
         TEST2,         //Test Register (must be 0x00)
       };
+
+      /*! @enum TwoWire error types */
+      typedef enum twi_error_type_t {
+        NO_ERROR = 0,
+        TX_BUFFER_OVERFLOW, 
+        NACK_ADDRESS, 
+        NACK_DATA, 
+        OTHER, 
+        TIME_OUT
+      };
     }
 
     /*! @brief AKM AK5558 Analog-to-Digital Converter driver for Arduino
@@ -97,7 +110,7 @@
         * 
         * @warning This will reset all device registers to the default configuration 
         */
-        void init(void);
+        bool init(void);
 
         /*! @brief  Enable the AK5558 by taking it out of reset
         *

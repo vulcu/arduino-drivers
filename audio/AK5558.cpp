@@ -7,7 +7,7 @@
 #include <Wire.h>
 #include "AK5558.h"
 
-namespace AKM {
+namespace AK5558 {
   using namespace AK5558Types;
 
   // AK5558 default register values for initialization
@@ -33,7 +33,7 @@ namespace AKM {
   }
 
   /// TODO: make audio IO configurable during init instead of defaulting to TDM256
-  void AK5558::init(void) {
+  bool AK5558::init(void) {
     // delay AK5558 enable to ensure correct initialization (datasheet pp.55-56)
     this->shutdown();
     delayMicroseconds(100);
@@ -41,49 +41,57 @@ namespace AKM {
     delay(AK5558_INT_PDN_OSCCLK_DELAY_MS);
 
     // set power management for channels 1-8 to OFF state (0)
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(PWRMGMT1);
-      pWire->write(0x00);
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(PWRMGMT1);
+      this->pWire->write(0x00);
+    twi_error_type_t error = (twi_error_type_t)this->pWire->endTransmission();
+    
+    // use the first TwoWire transaction during init to check if communication is working
+    if (error == NACK_ADDRESS) {
+      return false;
+    }
 
     // configure channel summing and timing reset
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(PWRMGMT2);
-      pWire->write(pgm_read_byte(&(this->default_config[PWRMGMT2])));
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(PWRMGMT2);
+      this->pWire->write(pgm_read_byte(&(this->default_config[PWRMGMT2])));
+    this->pWire->endTransmission();
 
     // configure clocking, DAI mode, HP filter
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(CONTROL1);
-      pWire->write(pgm_read_byte(&(this->default_config[CONTROL1])));
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(CONTROL1);
+      this->pWire->write(pgm_read_byte(&(this->default_config[CONTROL1])));
+    this->pWire->endTransmission();
 
     // configure TDM mode selection
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(CONTROL2);
-      pWire->write(pgm_read_byte(&(this->default_config[CONTROL2])));
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(CONTROL2);
+      this->pWire->write(pgm_read_byte(&(this->default_config[CONTROL2])));
+    this->pWire->endTransmission();
 
     // configure LP filter and DSD mode
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(CONTROL3);
-      pWire->write(pgm_read_byte(&(this->default_config[CONTROL3])));
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(CONTROL3);
+      this->pWire->write(pgm_read_byte(&(this->default_config[CONTROL3])));
+    this->pWire->endTransmission();
 
     //  configure DSD frequency, phase, clocking
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(DSD);
-      pWire->write(pgm_read_byte(&(this->default_config[DSD])));
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(DSD);
+      this->pWire->write(pgm_read_byte(&(this->default_config[DSD])));
+    this->pWire->endTransmission();
 
     // configure power management state for channels 1-8
-    pWire->beginTransmission(this->i2c_address);
-      pWire->write(PWRMGMT1);
-      pWire->write(pgm_read_byte(&(this->default_config[PWRMGMT1])));
-    pWire->endTransmission();
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(PWRMGMT1);
+      this->pWire->write(pgm_read_byte(&(this->default_config[PWRMGMT1])));
+    this->pWire->endTransmission();
 
     // set the active configuration to default configuration values
     this->resetActiveConfig();
+
+    // initialization was successful
+    return true;
   }
 
   void AK5558::enable(void) {
