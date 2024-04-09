@@ -55,7 +55,7 @@
         Stereo,
       };
   
-      CS4270(uint8_t i2c_addr, uint8_t reset_n, TwoWire *pWire);
+      CS4270(uint8_t i2c_address, uint8_t reset_n, TwoWire *pWire);
 
       void init(void);
       void enable(void);
@@ -65,7 +65,7 @@
       void volume(uint8_t value, channels_t channel);
 
     private:
-      const uint8_t i2c_addr;
+      const uint8_t i2c_address;
       const uint8_t reset_n;
       uint8_t channel_attenuation[2];
       TwoWire *pWire;
