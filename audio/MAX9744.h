@@ -29,27 +29,103 @@
   #define MAX9744_MINIMUM_VOL_LEVEL  (  0U)
   #define MAX9744_MAXIMUM_VOL_LEVEL  ( 63U)
 
-  class MAX9744 {
-    public:
-      MAX9744(uint8_t i2c_address, uint8_t mute_p, uint8_t shutdown_n, TwoWire *pWire);
+  namespace MAX9744{
+    namespace MAX9744Types {
+      /*! @enum TwoWire error types */
+      typedef enum twi_error_type_t {
+        NO_ERROR = 0,
+        TX_BUFFER_OVERFLOW, 
+        NACK_ADDRESS, 
+        NACK_DATA, 
+        OTHER, 
+        TIME_OUT
+      };
+    }
 
-      void init(void);
-      void enable(void);
-      void invertMuteLogic(bool invert_mute);
-      void mute(void);
-      void shutdown(void);
-      void unmute(void);
-      void volume(uint8_t value);
+    class MAX9744 {
+      public:
+        /*! @brief Class constructor
+        *
+        * @details A more elaborate description of the constructor.
+        * 
+        * @param i2c_address The physical device's I2C address
+        * @param reset_n     The microcontroller pin connected to the device RESET_L next
+        * @param pWire       A pointer to an instance of the TwoWire class
+        */
+        MAX9744(uint8_t i2c_address, uint8_t mute_p, uint8_t shutdown_n, TwoWire *pWire);
 
-      inline int16_t getGainAtVolumeIndex(uint8_t index);
+        /*! @brief  Initialize the MAX9744
+        *
+        * @details Initialize the device and write default config values to all registers
+        * 
+        * @warning This will reset all device registers to the default configuration 
+        */
+        bool init(void);
 
-    private:
-      bool invert_mute;
-      const uint8_t i2c_address;
-      const uint8_t mute_p;
-      const uint8_t shutdown_n;
-      static const int16_t MAX9744Gain_milliBels[64] PROGMEM;
-      TwoWire *pWire;
-  };
+        /*! @brief  Initialize the MAX9744
+        *
+        * @details Initialize the device and write default config values to all registers
+        * 
+        * @warning This will reset all device registers to the default configuration 
+        */
+        void enable(void);
+
+        /*! @brief  Initialize the MAX9744
+        *
+        * @details Initialize the device and write default config values to all registers
+        * 
+        * @warning This will reset all device registers to the default configuration 
+        */
+        void invertMuteLogic(bool invert_mute);
+
+        /*! @brief  Initialize the MAX9744
+        *
+        * @details Initialize the device and write default config values to all registers
+        * 
+        * @warning This will reset all device registers to the default configuration 
+        */
+        void mute(void);
+
+        /*! @brief  Initialize the MAX9744
+        *
+        * @details Initialize the device and write default config values to all registers
+        * 
+        * @warning This will reset all device registers to the default configuration 
+        */
+        void shutdown(void);
+
+        /*! @brief  Initialize the MAX9744
+        *
+        * @details Initialize the device and write default config values to all registers
+        * 
+        * @warning This will reset all device registers to the default configuration 
+        */
+        void unmute(void);
+
+        /*! @brief  Initialize the MAX9744
+        *
+        * @details Initialize the device and write default config values to all registers
+        * 
+        * @warning This will reset all device registers to the default configuration 
+        */
+        void volume(uint8_t value);
+
+        /*! @brief  Initialize the MAX9744
+        *
+        * @details Initialize the device and write default config values to all registers
+        * 
+        * @warning This will reset all device registers to the default configuration 
+        */
+        inline int16_t getGainAtVolumeIndex(uint8_t index);
+
+      private:
+        bool invert_mute;
+        const uint8_t i2c_address;
+        const uint8_t mute_p;
+        const uint8_t shutdown_n;
+        static const int16_t MAX9744Gain_milliBels[64] PROGMEM;
+        TwoWire *pWire;
+    };
+  }
 
 #endif

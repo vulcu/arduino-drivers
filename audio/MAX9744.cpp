@@ -18,99 +18,113 @@
 
 #include "MAX9744.h"
 
-// MAX9744 amplifier gain levels (dB), stored as milli-Bells 
-// (1/100 of a dB) to allow PROGMEM storage as an int type
-static const int16_t MAX9744::MAX9744Gain_milliBels[64] PROGMEM = 
-{
-  -10950,  -9290,   -9030,   -8680,
-  -8430,   -8080,   -7830,   -7470,
-  -7220,   -6870,   -6620,   -6270,
-  -6020,   -5670,   -5420,   -5060,
-  -4810,   -4560,   -4370,   -4210,
-  -3960,   -3760,   -3600,   -3340,
-  -3150,   -2980,   -2720,   -2520,
-  -2350,   -2160,   -1970,   -1750,
-  -1640,   -1540,   -1440,   -1310,
-  -1200,   -1090,   -990,    -890,
-  -710,    -600,    -500,    -340,
-  -190,    -50,      50,      120,
-   160,     200,     240,     290,
-   340,     390,     440,     490,
-   540,     590,     650,     700,
-   760,     820,     880,     950
-};
+namespace MAX9744 {
+  using namespace MAX9744Types;
 
-// class constructor for MAX9744 amplifier object
-MAX9744::MAX9744(uint8_t i2c_address, uint8_t mute_p, uint8_t shutdown_n, TwoWire *pWire) :
-  invert_mute(false), 
-  i2c_address(i2c_address), 
-  mute_p(mute_p), 
-  shutdown_n(shutdown_n) {
-  this->pWire = pWire;
-}
+  // MAX9744 amplifier gain levels (dB), stored as milli-Bells 
+  // (1/100 of a dB) to allow PROGMEM storage as an int type
+  static const int16_t MAX9744::MAX9744Gain_milliBels[64] PROGMEM = 
+  {
+    -10950,  -9290,   -9030,   -8680,
+    -8430,   -8080,   -7830,   -7470,
+    -7220,   -6870,   -6620,   -6270,
+    -6020,   -5670,   -5420,   -5060,
+    -4810,   -4560,   -4370,   -4210,
+    -3960,   -3760,   -3600,   -3340,
+    -3150,   -2980,   -2720,   -2520,
+    -2350,   -2160,   -1970,   -1750,
+    -1640,   -1540,   -1440,   -1310,
+    -1200,   -1090,   -990,    -890,
+    -710,    -600,    -500,    -340,
+    -190,    -50,      50,      120,
+    160,     200,     240,     290,
+    340,     390,     440,     490,
+    540,     590,     650,     700,
+    760,     820,     880,     950
+  };
 
-// initialize the MAX9744 and GPIO signals
-void MAX9744::init(void) {
-  pinMode(mute_p, OUTPUT);
-  pinMode(shutdown_n, OUTPUT);
-
-  // mute the MAX9744 then take it out of shutdown
-  mute();
-  enable();
-}
-
-// enable the MAX9744 by taking it out of shutdown (HIGH)
-void MAX9744::enable(void) {
-  digitalWrite(shutdown_n, HIGH);
-}
-
-// invert the mute signal (needed for use with Adafruit MAX9744 board)
-void MAX9744::invertMuteLogic(bool invert_mute) {
-  this->invert_mute = invert_mute;
-}
-
-// mute the MAX9744 amplifier via the MUTE pin
-void MAX9744::mute(void) {
-  // if the mute signal is inverted then set LOW to mute
-  if (invert_mute) {
-    digitalWrite(mute_p, LOW);
+  // class constructor for MAX9744 amplifier object
+  MAX9744::MAX9744(uint8_t i2c_address, uint8_t mute_p, uint8_t shutdown_n, TwoWire *pWire) :
+    invert_mute(false), 
+    i2c_address(i2c_address), 
+    mute_p(mute_p), 
+    shutdown_n(shutdown_n) {
+    this->pWire = pWire;
   }
-  else {
-    digitalWrite(mute_p, HIGH);
-  }
-}
 
-// disable the MAX9744 via the GPIO shutdown signal
-void MAX9744::shutdown(void) {
-  digitalWrite(shutdown_n, LOW);
-}
+  // initialize the MAX9744 and GPIO signals
+  bool MAX9744::init(void) {
+    pinMode(mute_p, OUTPUT);
+    pinMode(shutdown_n, OUTPUT);
 
-// unmute the MAX9744 amplifier via the MUTE pin
-void MAX9744::unmute(void) {
-  // if the mute signal is inverted then set HIGH to unmute
-  if (invert_mute) {
-    digitalWrite(mute_p, HIGH);
+    // mute the MAX9744 then take it out of shutdown
+    this->mute();
+    this->enable();
+      
+    // use a TwoWire transaction during init to check if communication is working
+    this->pWire->beginTransmission(i2c_address);
+    twi_error_type_t error = (twi_error_type_t)(this->pWire->endTransmission());
+    if (error == NACK_ADDRESS) {
+      return false;
+    }
+    else {
+      return true;
+    }
   }
-  else {
-    digitalWrite(mute_p, LOW);
-  }
-}
 
-// set the amplifier volume to a value between 0 [min] and 63 [max]
-void MAX9744::volume(uint8_t value) {
-  // if the value is less than 64 and two-wire is configured
-  if (value < MAX9744_MINIMUM_VOL_LEVEL) {
-    value = (uint8_t)MAX9744_MINIMUM_VOL_LEVEL;
-  } 
-  else if (value > MAX9744_MAXIMUM_VOL_LEVEL) {
-    value = (uint8_t)MAX9744_MAXIMUM_VOL_LEVEL;
+  // enable the MAX9744 by taking it out of shutdown (HIGH)
+  void MAX9744::enable(void) {
+    digitalWrite(shutdown_n, HIGH);
   }
-  pWire->beginTransmission(i2c_address);
-    pWire->write(value);
-  pWire->endTransmission();
-}
 
-// return the dB gain values correllating amplifier volume settings
-inline int16_t MAX9744::getGainAtVolumeIndex(uint8_t index) {
-  return pgm_read_word(&(MAX9744Gain_milliBels[index]));
+  // invert the mute signal (needed for use with Adafruit MAX9744 board)
+  void MAX9744::invertMuteLogic(bool invert_mute) {
+    this->invert_mute = invert_mute;
+  }
+
+  // mute the MAX9744 amplifier via the MUTE pin
+  void MAX9744::mute(void) {
+    // if the mute signal is inverted then set LOW to mute
+    if (invert_mute) {
+      digitalWrite(mute_p, LOW);
+    }
+    else {
+      digitalWrite(mute_p, HIGH);
+    }
+  }
+
+  // disable the MAX9744 via the GPIO shutdown signal
+  void MAX9744::shutdown(void) {
+    digitalWrite(shutdown_n, LOW);
+  }
+
+  // unmute the MAX9744 amplifier via the MUTE pin
+  void MAX9744::unmute(void) {
+    // if the mute signal is inverted then set HIGH to unmute
+    if (invert_mute) {
+      digitalWrite(mute_p, HIGH);
+    }
+    else {
+      digitalWrite(mute_p, LOW);
+    }
+  }
+
+  // set the amplifier volume to a value between 0 [min] and 63 [max]
+  void MAX9744::volume(uint8_t value) {
+    // if the value is less than 64 and two-wire is configured
+    if (value < MAX9744_MINIMUM_VOL_LEVEL) {
+      value = (uint8_t)MAX9744_MINIMUM_VOL_LEVEL;
+    } 
+    else if (value > MAX9744_MAXIMUM_VOL_LEVEL) {
+      value = (uint8_t)MAX9744_MAXIMUM_VOL_LEVEL;
+    }
+    this->pWire->beginTransmission(i2c_address);
+      this->pWire->write(value);
+    this->pWire->endTransmission();
+  }
+
+  // return the dB gain values correllating amplifier volume settings
+  inline int16_t MAX9744::getGainAtVolumeIndex(uint8_t index) {
+    return pgm_read_word(&(MAX9744Gain_milliBels[index]));
+  }
 }
