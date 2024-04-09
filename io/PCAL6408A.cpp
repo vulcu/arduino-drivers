@@ -28,7 +28,9 @@ namespace NXP {
   };
 
   PCAL6408A::PCAL6408A(uint8_t i2c_address, uint8_t reset_n, uint8_t interrupt_n, TwoWire *pWire) : 
-                      i2c_address(i2c_address), reset_n(reset_n), interrupt_n(interrupt_n) {
+    i2c_address(i2c_address), 
+    reset_n(reset_n), 
+    interrupt_n(interrupt_n) {
     this->pWire = pWire;
     this->resetActiveConfig();
   };
@@ -108,39 +110,102 @@ namespace NXP {
     digitalWrite(this->reset_n, HIGH);
   }
 
-  bool PCAL6408A::get(register_bitmask_t input_port) {
-    // read logical state of specified port bit
-    pWire->beginTransmission(this->i2c_address);
-    pWire->write(INPUT_PORT);
-    pWire->endTransmission();
-    delayMicroseconds(50);
-    pWire->requestFrom(this->i2c_address, 1U);
-    delayMicroseconds(50);
-    uint8_t read_data = (uint8_t)pWire->read();
-    pWire->endTransmission();
-
-    return (bool)((read_data & input_port) >> input_port);
+  uint8_t PCAL6408A::readInput(void) {
+    return this->getRegister(INPUT_PORT_PTR);
   }
 
-  void PCAL6408A::set(register_bitmask_t output_port, bool value) {
-    // read logical state of specified port first to avoid overwriting data
+  bool PCAL6408A::readInputPin(register_bitmask_t port_pin) {
+    return this->getRegisterBit(INPUT_PORT_PTR, port_pin);
+  }
+
+  void PCAL6408A::writeOutput(uint8_t value) {
+    this->setRegister(OUTPUT_PORT_PTR, value);
+  }
+
+  void PCAL6408A::writeOutputPin(register_bitmask_t port_pin, bool value) {
+    if (this->getRegisterBit(CONFIGURATION_PTR, port_pin)) {
+      this->setRegisterBit(CONFIGURATION_PTR, port_pin, false);
+    }
+    this->setRegister(OUTPUT_PORT_PTR, value);
+  }
+
+  void PCAL6408A::setPortPinAsInput(register_bitmask_t port_pin) {
+    this->setRegisterBit(CONFIGURATION_PTR, port_pin, true);
+  }
+
+  void PCAL6408A::setAllPinsAsInput(void) {
+    this->setRegister(CONFIGURATION_PTR, 0xFF);
+  }
+
+  void PCAL6408A::setPortPinAsOutput(register_bitmask_t port_pin) {
+    this->setRegisterBit(CONFIGURATION_PTR, port_pin, false);
+  }
+
+  void PCAL6408A::setAllPinsAsOutput(void) {
+    this->setRegister(CONFIGURATION_PTR, 0x00);
+  }
+
+  void PCAL6408A::setPortPinPolarity(register_bitmask_t port_pin, polarity_inversion_t polarity) {
+    this->setRegisterBit(POLARITY_INVERSION_PTR, port_pin, (bool)polarity);
+  }
+
+  void PCAL6408A::setAllPinsPolarity(polarity_inversion_t polarity) {
+    if (polarity == INVERTED) {
+      this->setRegister(POLARITY_INVERSION_PTR, 0xFF);
+    }
+    else {
+      this->setRegister(POLARITY_INVERSION_PTR, 0x00);
+    }
+  }
+
+  uint8_t PCAL6408A::getRegister(register_pointer_t register_pointer) {
+    // read logical state of specified port bit
     pWire->beginTransmission(this->i2c_address);
-    pWire->write(OUTPUT_PORT);
+    pWire->write(register_pointer);
     pWire->endTransmission();
     delayMicroseconds(50);
     pWire->requestFrom(this->i2c_address, 1U);
     delayMicroseconds(50);
     uint8_t read_data = (uint8_t)pWire->read();
     pWire->endTransmission();
+
+    return read_data;
+  }
+
+  bool PCAL6408A::getRegisterBit(register_pointer_t register_pointer, register_bitmask_t bitmask) {
+    // read logical state of specified port bit
+    pWire->beginTransmission(this->i2c_address);
+    pWire->write(register_pointer);
+    pWire->endTransmission();
+    delayMicroseconds(50);
+    pWire->requestFrom(this->i2c_address, 1U);
+    delayMicroseconds(50);
+    uint8_t read_data = (uint8_t)pWire->read();
+    pWire->endTransmission();
+
+    return (bool)((read_data & bitmask) >> bitmask);
+  }
+
+  void PCAL6408A::setRegister(register_pointer_t register_pointer, uint8_t value) {
+    // write logical state of entire specified register
+    pWire->beginTransmission(this->i2c_address);
+      pWire->write(register_pointer);
+      pWire->write(value);
+    pWire->endTransmission();
+  }
+
+  void PCAL6408A::setRegisterBit(register_pointer_t register_pointer, register_bitmask_t bitmask, bool value) {
+    // read logical state of specified port first to avoid overwriting data
+    uint8_t read_data = this->getRegister(register_pointer);
 
     // write logical state of specified port bit
     pWire->beginTransmission(this->i2c_address);
-      pWire->write(OUTPUT_PORT);
+      pWire->write(register_pointer);
       if (value = HIGH) {
-        pWire->write((read_data | output_port));
+        pWire->write((read_data | bitmask));
       }
       else {
-        pWire->write((read_data & ~output_port));
+        pWire->write((read_data & ~bitmask));
       }
     pWire->endTransmission();
   }
