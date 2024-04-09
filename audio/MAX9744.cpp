@@ -41,11 +41,11 @@ static const int16_t MAX9744::MAX9744Gain_milliBels[64] PROGMEM =
 };
 
 // class constructor for MAX9744 amplifier object
-MAX9744::MAX9744(uint8_t i2c_addr, uint8_t mute_p, uint8_t shutdown_n, TwoWire *pWire) :
-  invert_mute(false) {
-  this->i2c_addr = i2c_addr;
-  this->mute_p = mute_p;
-  this->shutdown_n = shutdown_n;
+MAX9744::MAX9744(uint8_t i2c_address, uint8_t mute_p, uint8_t shutdown_n, TwoWire *pWire) :
+  invert_mute(false), 
+  i2c_address(i2c_address), 
+  mute_p(mute_p), 
+  shutdown_n(shutdown_n) {
   this->pWire = pWire;
 }
 
@@ -99,13 +99,15 @@ void MAX9744::unmute(void) {
 // set the amplifier volume to a value between 0 [min] and 63 [max]
 void MAX9744::volume(uint8_t value) {
   // if the value is less than 64 and two-wire is configured
-  if ((value >= MAX9744_MINIMUM_VOL_LEVEL) &&
-      (value <= MAX9744_MAXIMUM_VOL_LEVEL) &&
-      (TWCR != 0x00)) {
-    pWire->beginTransmission(i2c_addr);
-      pWire->write(value);
-    pWire->endTransmission();
+  if (value < MAX9744_MINIMUM_VOL_LEVEL) {
+    value = (uint8_t)MAX9744_MINIMUM_VOL_LEVEL;
+  } 
+  else if (value > MAX9744_MAXIMUM_VOL_LEVEL) {
+    value = (uint8_t)MAX9744_MAXIMUM_VOL_LEVEL;
   }
+  pWire->beginTransmission(i2c_address);
+    pWire->write(value);
+  pWire->endTransmission();
 }
 
 // return the dB gain values correllating amplifier volume settings

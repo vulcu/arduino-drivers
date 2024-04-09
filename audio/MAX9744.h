@@ -23,15 +23,15 @@
   #include <Wire.h>
 
   // default I2C address for the MAX9744
-  #define MAX9744_DEFAULT_I2CADDR ((uint8_t)0x4B)
+  #define MAX9744_DEFAULT_I2CADDR    (0x4B)
 
   // min/max volume level of the MAX9744 amplifier
-  #define MAX9744_MINIMUM_VOL_LEVEL  ((uint8_t)0U)
-  #define MAX9744_MAXIMUM_VOL_LEVEL  ((uint8_t)63U)
+  #define MAX9744_MINIMUM_VOL_LEVEL  (  0U)
+  #define MAX9744_MAXIMUM_VOL_LEVEL  ( 63U)
 
   class MAX9744 {
     public:
-      MAX9744(uint8_t i2c_addr, uint8_t mute_p, uint8_t shutdown_n, TwoWire *pWire);
+      MAX9744(uint8_t i2c_address, uint8_t mute_p, uint8_t shutdown_n, TwoWire *pWire);
 
       void init(void);
       void enable(void);
@@ -45,9 +45,9 @@
 
     private:
       bool invert_mute;
-      uint8_t i2c_addr;
-      uint8_t mute_p;
-      uint8_t shutdown_n;
+      const uint8_t i2c_address;
+      const uint8_t mute_p;
+      const uint8_t shutdown_n;
       static const int16_t MAX9744Gain_milliBels[64] PROGMEM;
       TwoWire *pWire;
   };
