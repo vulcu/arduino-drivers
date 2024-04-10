@@ -11,7 +11,7 @@ namespace PCAL6408A {
   using namespace PCAL6408ATypes;
 
   // PCAL6408A default register values for initialization
-  static const uint8_t PCAL6408A::default_config[12] PROGMEM = 
+  const uint8_t PCAL6408A::default_config[12] PROGMEM = 
   {
     0x00,                 // Input Port
     0xFF,                 // Output Port

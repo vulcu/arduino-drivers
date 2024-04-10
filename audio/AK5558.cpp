@@ -11,7 +11,7 @@ namespace AK5558 {
   using namespace AK5558Types;
 
   // AK5558 default register values for initialization
-  static const uint8_t AK5558::default_config[8] PROGMEM = 
+  const uint8_t AK5558::default_config[8] PROGMEM = 
   {
     0xFF,                 // Power Management
     0x01,                 // Channel Summing and Timing Reset
