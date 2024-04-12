@@ -30,57 +30,59 @@
   #define INIT_RESET_CYCLE_WAIT_TIME_MS (10U)
   #define TARGET_LENGTH_EQ_PRESET       (3U)
 
-  class BM62 {
-    public:
-      // These are the equalizer preset modes available on the BM62
-      enum eq_preset_t {
-        EQ_Off, 
-        EQ_Soft, 
-        EQ_Bass, 
-        EQ_Treble, 
-        EQ_Classical, 
-        EQ_Rock, 
-        EQ_Jazz, 
-        EQ_Pop, 
-        EQ_Dance,
-        EQ_RnB, 
-        EQ_Custom,
-      };
+  namespace BM62 {
+    class BM62 {
+      public:
+        // These are the equalizer preset modes available on the BM62
+        enum eq_preset_t {
+          EQ_Off, 
+          EQ_Soft, 
+          EQ_Bass, 
+          EQ_Treble, 
+          EQ_Classical, 
+          EQ_Rock, 
+          EQ_Jazz, 
+          EQ_Pop, 
+          EQ_Dance,
+          EQ_RnB, 
+          EQ_Custom,
+        };
 
-      /*! @brief Class constructor
-        *
-        * @details A more elaborate description of the constructor.
-        * 
-        * @param prgm_sense_n  Pin number for senseing if BM62 module was booted into flash reprogram mode
-        * @param reset_n       Pin number for resetting BM62 module
-        * @param ind_a2dp_n    Pin number for reading A2DP profile connection status
-        * @param pSerial       A pointer to an instance of the Stream class
-        */
-      BM62(uint8_t prgm_sense_n, uint8_t reset_n, uint8_t ind_a2dp_n, Stream *pSerial);
+        /*! @brief Class constructor
+          *
+          * @details A more elaborate description of the constructor.
+          * 
+          * @param prgm_sense_n  Pin number for senseing if BM62 module was booted into flash reprogram mode
+          * @param reset_n       Pin number for resetting BM62 module
+          * @param ind_a2dp_n    Pin number for reading A2DP profile connection status
+          * @param pSerial       A pointer to an instance of the Stream class
+          */
+        BM62(uint8_t prgm_sense_n, uint8_t reset_n, uint8_t ind_a2dp_n, Stream *pSerial);
 
-      void enable(void);
-      void enterPairingMode(void);
-      void init(void);
-      bool isConnected(void);
-      void reset(void);
-      void setEqualizerPreset(eq_preset_t preset);
-      void play(void);
-      void pause(void);
-      void playPauseToggle(void);
-      void stop(void);
-      void previous(void);
-      void next(void);
+        void enable(void);
+        void enterPairingMode(void);
+        void init(void);
+        bool isConnected(void);
+        void reset(void);
+        void setEqualizerPreset(eq_preset_t preset);
+        void play(void);
+        void pause(void);
+        void playPauseToggle(void);
+        void stop(void);
+        void previous(void);
+        void next(void);
 
-    private:
-      // 
-      const uint8_t prgm_sense_n;
-      const uint8_t reset_n;
-      const uint8_t ind_a2dp_n;
-      Stream* pSerial;
+      private:
+        // 
+        const uint8_t prgm_sense_n;
+        const uint8_t reset_n;
+        const uint8_t ind_a2dp_n;
+        Stream* pSerial;
 
-      uint8_t checksum(const uint8_t command[], const uint8_t command_length);
-      void    haltIfProgramMode(void);
-      void    writeSerialCommand(const uint8_t instruction[], const size_t bytes_command);
-  };
+        uint8_t checksum(const uint8_t command[], const uint8_t command_length);
+        void    haltIfProgramMode(void);
+        void    writeSerialCommand(const uint8_t instruction[], const size_t bytes_command);
+    };
+  }
 
 #endif
