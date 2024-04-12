@@ -19,19 +19,21 @@
 #ifndef MSI_MSGEQ7_H
 #define MSI_MSGEQ7_H
 
-  class MSGEQ7 {
-    public:
-      MSGEQ7(uint8_t strobe_p, uint8_t dc_out, uint8_t reset_p, bool use_input_pullup);
+  namespace MSGEQ7 {
+    class MSGEQ7 {
+      public:
+        MSGEQ7(uint8_t strobe_p, uint8_t dc_out, uint8_t reset_p, bool use_input_pullup);
 
-      void     init(void);
-      uint16_t mean(uint16_t array_values[], const size_t array_size);
-      void     read(uint16_t array_values[], const size_t array_size);
+        void     init(void);
+        uint16_t mean(uint16_t array_values[], const size_t array_size);
+        void     read(uint16_t array_values[], const size_t array_size);
 
-    private:
-      const bool    use_input_pullup;
-      const uint8_t dc_out;
-      const uint8_t reset_p;
-      const uint8_t strobe_p;
-  };
+      private:
+        const bool    use_input_pullup;
+        const uint8_t dc_out;
+        const uint8_t reset_p;
+        const uint8_t strobe_p;
+    };
+  }
 
 #endif
