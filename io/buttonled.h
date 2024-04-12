@@ -19,51 +19,53 @@
 #ifndef LED_BUTTON_H
 #define LED_BUTTON_H
 
-  class LED {
-    public:
-      LED(int8_t led_pinAttachment);
+  namespace ButtonLED {
+    class LED {
+      public:
+        LED(int8_t led_pinAttachment);
 
-      void attach(const int8_t led_pin);
-      void brightness(const uint8_t value);
-      void init(void);
-      void off(void);
-      void on(void);
-      void reset(void);
+        void attach(const int8_t led_pin);
+        void brightness(const uint8_t value);
+        void init(void);
+        void off(void);
+        void on(void);
+        void reset(void);
+
+        private:
+        int8_t led_pin;
+    };
+
+
+    class Button {
+      public:
+        Button(uint8_t button_pin);
+
+        void disableInputPullup(void);
+        void enableInputPullup(void);
+        void init(void);
+        bool read(void);
+
+        private:    
+        const int8_t button_pin;
+        uint8_t button_port_input_mode;
+    };
+
+
+    class ButtonLED: public Button {
+      public:
+        ButtonLED(int8_t button_pin, LED &led);
+      
+        void attach(const int8_t led_pin);
+        void brightness(const uint8_t value);
+        void disableInputPullup(void);
+        void enableInputPullup(void);
+        void init(void);
+        void off(void);
+        void unattach(void);
 
       private:
-      int8_t led_pin;
-  };
-
-
-  class Button {
-    public:
-      Button(uint8_t button_pin);
-
-      void disableInputPullup(void);
-      void enableInputPullup(void);
-      void init(void);
-      bool read(void);
-
-      private:    
-      const int8_t button_pin;
-      uint8_t button_port_input_mode;
-  };
-
-
-  class ButtonLED: public Button {
-    public:
-      ButtonLED(int8_t button_pin, LED &led);
-    
-      void attach(const int8_t led_pin);
-      void brightness(const uint8_t value);
-      void disableInputPullup(void);
-      void enableInputPullup(void);
-      void init(void);
-      void off(void);
-      void unattach(void);
-
-    private:
-      LED led;
-  };
+        LED led;
+    };
+  }
 
 #endif
