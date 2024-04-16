@@ -7,7 +7,7 @@
 #define PCAL6408A_H
 
   // define the PCAL6408A I2C address, by default is hardware configured to 0x20
-  #define AK5558_DEFAULT_I2CADDR (0x20)
+  #define PCAL6408A_DEFAULT_I2CADDR (0x20)
 
   namespace PCAL6408A {
     namespace PCAL6408ATypes {
