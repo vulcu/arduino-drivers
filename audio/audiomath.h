@@ -19,31 +19,54 @@
 #ifndef AUDIOMATH_H
 #define AUDIOMATH_H
 
-  // array in PROGMEM for storing dB coefficients
-  #define DB_FAST_COEFFICIENT_COUNT ((uint8_t)25U)
+  
 
   /// TODO: Extricate the MAX9744-specific methods and move to MAX9744 driver class
   class Audiomath {
     public:
-      static void     convertVolumeToGain(const uint8_t start, const uint8_t stop, 
-                                          int16_t *values, const size_t size);
-      static void     dBFastRelativeLevel(uint16_t *dB_levels, const uint16_t base_level);
-      static uint16_t decayBuffer32(uint16_t *data_buffer, const size_t buffer_size, 
-                                    uint16_t const data_mean, 
-                                    const uint16_t nominal_zero_signal_level);
-      static void     mapVolumeToBoundedRange(const uint8_t volume, uint8_t *volume_map, 
-                                              const size_t volume_map_size);
-      static uint8_t  getVolumeMapIndx(const uint16_t audio_level, const uint16_t *dB_levels, 
-                                       const size_t dB_levels_size);
+
+      /*! @brief  Error-check the incoming ASCII command string
+      *
+      * @details Detailed description here.
+      * 
+      * @param   param    Description of the input parameter
+      * @param   param    Description of the input parameter
+      * @param   param    Description of the input parameter
+      * @returns int16_t Total valid character count of incoming buffer
+      */
       static uint32_t floatTo523(float float_value);
+
+      /*! @brief  Error-check the incoming ASCII command string
+      *
+      * @details Detailed description here.
+      * 
+      * @param   param    Description of the input parameter
+      * @param   param    Description of the input parameter
+      * @param   param    Description of the input parameter
+      * @returns int16_t Total valid character count of incoming buffer
+      */
       static int16_t  quantizeValueToNearest(int16_t value, const uint8_t quantize_step);
 
-    private:
-      /// TODO: There may be a better way to do this using static variables within functions
-      static uint8_t buffer_indx_32;
-      static uint8_t vm_index_previous;
+      /*! @brief  Error-check the incoming ASCII command string
+      *
+      * @details Detailed description here.
+      * 
+      * @param   param    Description of the input parameter
+      * @param   param    Description of the input parameter
+      * @param   param    Description of the input parameter
+      * @returns int16_t Total valid character count of incoming buffer
+      */
+      int16_t getIntFromCharArray(const char *char_array, uint8_t start, size_t array_size);
 
-      static const uint16_t dB_fast_coefficient[DB_FAST_COEFFICIENT_COUNT] PROGMEM;
+      /*! @brief  Error-check the incoming ASCII command string
+      *
+      * @details Detailed description here.
+      * 
+      * @param   param    Description of the input parameter
+      * @param   param    Description of the input parameter
+      * @returns uint16_t Total valid character count of incoming buffer
+      */
+      uint16_t power_uint8(uint8_t base, uint8_t exponent);
   };
 
 #endif
