@@ -15,7 +15,7 @@
   namespace AK5558 {
     namespace AK5558Types {
       /*! @enum Power Management Register */
-      enum pwrmgmt1_t {
+      enum pwrmgmt1_bitmask_t {
         PW1_BM = (0x01 << 0),  
         PW2_BM = (0x01 << 1), 
         PW3_BM = (0x01 << 2), 
@@ -27,14 +27,14 @@
       };
 
       /*! @enum Channel Summing and Timing Reset Register */
-      enum pwrmgmt2_t {
+      enum pwrmgmt2_bitmask_t {
         RSTN_BM  = (0x01 << 0), 
         MONO1_BM = (0x01 << 1), 
         MONO2_BM = (0x01 << 2), 
       };
 
       /*! @enum Clocking, DAI Mode, HP Filter Register */
-      enum control1_t {
+      enum control1_bitmask_t {
         HFPE_BM = (0x01 << 0), 
         DIF0_BM = (0x01 << 1), 
         DIF1_BM = (0x01 << 2), 
@@ -45,19 +45,19 @@
       };
 
       /*! @enum TDM Mode Selection Register */
-      enum control2_t {
+      enum control2_bitmask_t {
         TDM0_BM = (0x01 << 5), 
         TDM1_BM = (0x01 << 6), 
       };
 
       /*! @enum LP Filter, DSD Mode Register */
-      enum control3_t {
+      enum control3_bitmask_t {
         SLOW_BM = (0x01 << 0), 
         SD_BM   = (0x01 << 1), 
       };
 
       /*! @enum DSD Configuration Register */
-      enum dsd_t {
+      enum dsd_bitmask_t {
         DSDSEL0_BM = (0x01 << 0), 
         DSDSEL1_BM = (0x01 << 1), 
         DCKB_BM    = (0x01 << 2), 
@@ -66,7 +66,7 @@
       };
 
       /*! @enum AK5558 register address index */
-      enum AK5558_register_index {
+      enum register_name_t {
         PWRMGMT1 = 0,  //Power Management
         PWRMGMT2,      //Channel Summing and Timing Reset
         CONTROL1,      //Clocking, DAI Mode, HP Filter
@@ -84,7 +84,7 @@
         NACK_ADDRESS, 
         NACK_DATA, 
         OTHER, 
-        TIME_OUT
+        TIME_OUT,
       };
     }
 

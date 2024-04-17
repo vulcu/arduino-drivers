@@ -16,7 +16,7 @@ namespace AK5558 {
   {
     0xFF,                 // Power Management
     0x01,                 // Channel Summing and Timing Reset
-    0x31,                 // Clocking, DAI Mode, HP Filter
+    0x35,                 // Clocking, DAI Mode, HP Filter
     0x40,                 // TDM Mode Selection
     0x00,                 // LP Filter, DSD Mode
     0x00,                 // DSD Configuration
@@ -129,6 +129,58 @@ namespace AK5558 {
       // TODO: unmute device by setting bit LOW
     }
   }
+
+  // uint8_t AK5558::getRegister(register_pointer_t register_pointer) {
+  //   // read logical state of specified port bit
+  //   this->pWire->beginTransmission(this->i2c_address);
+  //   this->pWire->write(register_pointer);
+  //   this->pWire->endTransmission();
+  //   delayMicroseconds(50);
+  //   this->pWire->requestFrom(this->i2c_address, 1U);
+  //   delayMicroseconds(50);
+  //   uint8_t read_data = (uint8_t)this->pWire->read();
+  //   this->pWire->endTransmission();
+
+  //   return read_data;
+  // }
+
+  // bool AK5558::getRegisterBit(register_pointer_t register_pointer, register_bitmask_t bitmask) {
+  //   // read logical state of specified port bit
+  //   this->pWire->beginTransmission(this->i2c_address);
+  //   this->pWire->write(register_pointer);
+  //   this->pWire->endTransmission();
+  //   delayMicroseconds(50);
+  //   this->pWire->requestFrom(this->i2c_address, 1U);
+  //   delayMicroseconds(50);
+  //   uint8_t read_data = (uint8_t)this->pWire->read();
+  //   this->pWire->endTransmission();
+
+  //   return (bool)((read_data & bitmask) >> bitmask);
+  // }
+
+  // void AK5558::setRegister(register_pointer_t register_pointer, uint8_t value) {
+  //   // write logical state of entire specified register
+  //   this->pWire->beginTransmission(this->i2c_address);
+  //     this->pWire->write(register_pointer);
+  //     this->pWire->write(value);
+  //   this->pWire->endTransmission();
+  // }
+
+  // void AK5558::setRegisterBit(register_pointer_t register_pointer, register_bitmask_t bitmask, bool value) {
+  //   // read logical state of specified port first to avoid overwriting data
+  //   uint8_t read_data = this->getRegister(register_pointer);
+
+  //   // write logical state of specified port bit
+  //   this->pWire->beginTransmission(this->i2c_address);
+  //     this->pWire->write(register_pointer);
+  //     if (value = HIGH) {
+  //       this->pWire->write((read_data | bitmask));
+  //     }
+  //     else {
+  //       this->pWire->write((read_data & ~bitmask));
+  //     }
+  //   this->pWire->endTransmission();
+  // }
 
   void AK5558::resetActiveConfig(void) {
     memcpy_P(this->active_config, this->default_config, sizeof(this->default_config));
