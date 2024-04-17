@@ -29,14 +29,14 @@
   #define MAX9744_MINIMUM_VOL_LEVEL  (  0U)
   #define MAX9744_MAXIMUM_VOL_LEVEL  ( 63U)
 
+  // array in PROGMEM for storing dB coefficients
+  #define DB_FAST_COEFFICIENT_COUNT  ( 25U)
+
   // Gain range bounds and analysis step size (in 1/100ths of a dB)
   // these values must be hardcoded to match `coeffecients_dB`
-  #define MILLIBEL_BOUND_LOWER (int16_t) -600
-  #define MILLIBEL_BOUND_UPPER (int16_t)  600
-  #define MILLIBEL_STEP_SIZE   (int16_t)  50
-
-  // array in PROGMEM for storing dB coefficients
-  #define DB_FAST_COEFFICIENT_COUNT (25U)
+  #define MILLIBEL_BOUND_LOWER ((int16_t)-600)
+  #define MILLIBEL_BOUND_UPPER ((int16_t)600)
+  #define MILLIBEL_STEP_SIZE   ((int16_t)50)
 
   namespace MAX9744{
     namespace MAX9744Types {
