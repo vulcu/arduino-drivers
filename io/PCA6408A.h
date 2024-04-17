@@ -1,16 +1,16 @@
 /*
- * PCAL6408A.h - NXP PCAL6408A IO Expander driver for Arduino
+ * PCA6408A.h - PCA6408A IO Expander driver for Arduino
  */
 
 // consider replacing with #pragma once
-#ifndef PCAL6408A_H
-#define PCAL6408A_H
+#ifndef PCA6408A_H
+#define PCA6408A_H
 
-  // define the PCAL6408A I2C address, by default is hardware configured to 0x20
-  #define PCAL6408A_DEFAULT_I2CADDR (0x20)
+  // define the PCA6408A I2C address, by default is hardware configured to 0x20
+  #define PCA6408A_DEFAULT_I2CADDR (0x20)
 
-  namespace PCAL6408A {
-    namespace PCAL6408ATypes {
+  namespace PCA6408A {
+    namespace PCA6408ATypes {
       /*! @enum PCAL6408A current control register bitmasks */
       typedef enum current_control_bitmask_t {
         CC0 = (0x01 << 0),  
@@ -19,7 +19,8 @@
         CC3 = (0x01 << 6),  
       };
 
-      /*! @enum PCAL6408A pointer register command bytes */
+      /// TODO: split this up to separate the PCAL6408A Agile I/O registers
+      /*! @enum PCA6408A and PCAL6408A pointer register command bytes */
       typedef enum register_pointer_t {
         INPUT_PORT_PTR          = 0x00, // Input Port Register (Read-Only)
         OUTPUT_PORT_PTR         = 0x01, // Output Port Register
@@ -35,7 +36,8 @@
         OUTPUT_PORT_CONFIG_PTR  = 0x4F, // Set Outputs as Push/Pull or OD
       };
 
-      /*! @enum PCAL6408A register names */
+      /// TODO: split this up to separate the PCAL6408A Agile I/O registers
+      /*! @enum PCA6408A and PCAL6408A register names */
       typedef enum register_name_t {
         INPUT_PORT          = 0,  // Input Port Register (Read-Only)
         OUTPUT_PORT,              // Output Port Register
@@ -58,13 +60,13 @@
         NACK_ADDRESS, 
         NACK_DATA, 
         OTHER, 
-        TIME_OUT
+        TIME_OUT,
       };
     }
 
-    class PCAL6408A {
+    class PCA6408A {
       public:
-        /*! @enum PCAL6408A register bitmasks */
+        /*! @enum PCA6408A register bitmasks */
         typedef enum register_bitmask_t {
           BIT0 = (0x01 << 0),  
           BIT1 = (0x01 << 1), 
@@ -76,7 +78,7 @@
           BIT7 = (0x01 << 7),  
         } registers;
 
-        /*! @enum PCAL6408A input polarity */
+        /*! @enum PCA6408A input polarity */
         enum polarity_inversion_t {
           NORMAL = 0,  
           INVERTED,  
@@ -90,12 +92,12 @@
         * @param reset_n     The microcontroller pin connected to the device RESET_L next
         * @param pWire       A pointer to an instance of the TwoWire class
         */
-        PCAL6408A(const uint8_t i2c_address, 
+        PCA6408A(const uint8_t i2c_address, 
                   const uint8_t reset_n, 
                   const uint8_t interrupt_n, 
                   TwoWire* pWire);
 
-        /*! @brief  Initialize the PCAL6408A
+        /*! @brief  Initialize the PCA6408A
         *
         * @details Initialize the device and write default config values to all registers
         * 
@@ -103,73 +105,79 @@
         */
         bool init(void);
 
-        /*! @brief  Enable the PCAL6408A by taking it out of reset
+        /*! @brief  Enable the PCA6408A by taking it out of reset
         *
         * @details A more elaborate description of the class member.
         */
         void enable(void);
 
-        /*! @brief  Disable the PCAL6408A by placing it in reset
+        /*! @brief  Disable the PCA6408A by placing it in reset
         *
         * @details A more elaborate description of the class member.
         */
         void shutdown(void);
 
-        /*! @brief  Disable the PCAL6408A by placing it in reset
+        /*! @brief  Disable the PCA6408A by placing it in reset
+        *
+        * @details A more elaborate description of the class member.
+        */
+        bool isAgileIoAvailable(void);
+
+        /*! @brief  Disable the PCA6408A by placing it in reset
         *
         * @details A more elaborate description of the class member.
         */
         uint8_t readInput(void);
 
-        /*! @brief  Disable the PCAL6408A by placing it in reset
+        /*! @brief  Disable the PCA6408A by placing it in reset
         *
         * @details A more elaborate description of the class member.
         */
         bool readInputPin(register_bitmask_t port_pin);
 
-        /*! @brief  Disable the PCAL6408A by placing it in reset
+        /*! @brief  Disable the PCA6408A by placing it in reset
         *
         * @details A more elaborate description of the class member.
         */
         void writeOutput(uint8_t value);
 
-        /*! @brief  Disable the PCAL6408A by placing it in reset
+        /*! @brief  Disable the PCA6408A by placing it in reset
         *
         * @details A more elaborate description of the class member.
         */
         void writeOutputPin(register_bitmask_t port_pin, bool value);
         
-        /*! @brief  Disable the PCAL6408A by placing it in reset
+        /*! @brief  Disable the PCA6408A by placing it in reset
         *
         * @details A more elaborate description of the class member.
         */
         void setPortPinAsInput(register_bitmask_t port_pin);
         
-        /*! @brief  Disable the PCAL6408A by placing it in reset
+        /*! @brief  Disable the PCA6408A by placing it in reset
         *
         * @details A more elaborate description of the class member.
         */
         void setAllPinsAsInput(void);
 
-        /*! @brief  Disable the PCAL6408A by placing it in reset
+        /*! @brief  Disable the PCA6408A by placing it in reset
         *
         * @details A more elaborate description of the class member.
         */
         void setPortPinAsOutput(register_bitmask_t port_pin);
 
-        /*! @brief  Disable the PCAL6408A by placing it in reset
+        /*! @brief  Disable the PCA6408A by placing it in reset
         *
         * @details A more elaborate description of the class member.
         */
         void setAllPinsAsOutput(void);
 
-        /*! @brief  Disable the PCAL6408A by placing it in reset
+        /*! @brief  Disable the PCA6408A by placing it in reset
         *
         * @details A more elaborate description of the class member.
         */
         void setPortPinPolarity(register_bitmask_t port_pin, polarity_inversion_t polarity);
 
-        /*! @brief  Disable the PCAL6408A by placing it in reset
+        /*! @brief  Disable the PCA6408A by placing it in reset
         *
         * @details A more elaborate description of the class member.
         */
@@ -179,6 +187,7 @@
         const uint8_t i2c_address;
         const uint8_t interrupt_n;
         const uint8_t reset_n;
+        bool agile_io_available;
         uint8_t active_config[12];
         static const uint8_t default_config[12] PROGMEM;
         TwoWire *pWire;
@@ -191,7 +200,7 @@
         * 
         * @returns 
         */
-        uint8_t getRegister(PCAL6408ATypes::register_pointer_t register_pointer);
+        uint8_t getRegister(PCA6408ATypes::register_pointer_t register_pointer);
 
         /*! @brief Class constructor
         *
@@ -201,7 +210,7 @@
         * 
         * @returns 
         */
-        bool getRegisterBit(PCAL6408ATypes::register_pointer_t register_pointer, 
+        bool getRegisterBit(PCA6408ATypes::register_pointer_t register_pointer, 
                             register_bitmask_t bitmask);
 
         /*! @brief Class constructor
@@ -211,7 +220,7 @@
         * @param output_port The output port register bit to write
         * @param value       The boolean value to write (0 or 1)
         */
-        void setRegister(PCAL6408ATypes::register_pointer_t register_pointer, uint8_t value);
+        void setRegister(PCA6408ATypes::register_pointer_t register_pointer, uint8_t value);
 
         /*! @brief Class constructor
         *
@@ -220,11 +229,11 @@
         * @param output_port The output port register bit to write
         * @param value       The boolean value to write (0 or 1)
         */
-        void setRegisterBit(PCAL6408ATypes::register_pointer_t register_pointer, 
+        void setRegisterBit(PCA6408ATypes::register_pointer_t register_pointer, 
                             register_bitmask_t bitmask, 
                             bool value); 
 
-        /*! @brief Reset the PCAL6408A configuration in memory
+        /*! @brief Reset the PCA6408A configuration in memory
         *
         * @details Reset the device configuration in SRAM to the default configuration.
         * 
