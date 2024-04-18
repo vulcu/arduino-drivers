@@ -12,7 +12,7 @@
   namespace PCA6408A {
     namespace PCA6408ATypes {
       /*! @enum PCAL6408A current control register bitmasks */
-      typedef enum current_control_bitmask_t {
+      enum current_control_bitmask_t {
         CC0 = (0x01 << 0),  
         CC1 = (0x01 << 2), 
         CC2 = (0x01 << 4), 
@@ -21,7 +21,7 @@
 
       /// TODO: split this up to separate the PCAL6408A Agile I/O registers
       /*! @enum PCA6408A and PCAL6408A pointer register command bytes */
-      typedef enum register_pointer_t {
+      enum register_pointer_t {
         INPUT_PORT_PTR          = 0x00, // Input Port Register (Read-Only)
         OUTPUT_PORT_PTR         = 0x01, // Output Port Register
         POLARITY_INVERSION_PTR  = 0x02, // Polarity Inversion (Input Only)
@@ -38,7 +38,7 @@
 
       /// TODO: split this up to separate the PCAL6408A Agile I/O registers
       /*! @enum PCA6408A and PCAL6408A register names */
-      typedef enum register_name_t {
+      enum register_name_t {
         INPUT_PORT          = 0,  // Input Port Register (Read-Only)
         OUTPUT_PORT,              // Output Port Register
         POLARITY_INVERSION,       // Polarity Inversion (Input Only)
@@ -54,7 +54,7 @@
       };
 
       /*! @enum TwoWire error types */
-      typedef enum twi_error_type_t {
+      enum twi_error_type_t {
         NO_ERROR = 0,
         TX_BUFFER_OVERFLOW, 
         NACK_ADDRESS, 
@@ -67,7 +67,7 @@
     class PCA6408A {
       public:
         /*! @enum PCA6408A register bitmasks */
-        typedef enum register_bitmask_t {
+        enum register_bitmask_t {
           BIT0 = (0x01 << 0),  
           BIT1 = (0x01 << 1), 
           BIT2 = (0x01 << 2), 
@@ -185,8 +185,8 @@
 
       private:
         const uint8_t i2c_address;
-        const uint8_t interrupt_n;
         const uint8_t reset_n;
+        const uint8_t interrupt_n;
         bool agile_io_available;
         uint8_t active_config[12];
         static const uint8_t default_config[12] PROGMEM;

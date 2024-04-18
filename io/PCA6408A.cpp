@@ -32,7 +32,7 @@ namespace PCA6408A {
     reset_n(reset_n), 
     interrupt_n(interrupt_n),
     agile_io_available(false),
-    active_config({0x00}) {
+    active_config{0x00} {
     this->shutdown();
     this->pWire = pWire;
     // this->resetActiveConfig();
@@ -228,7 +228,7 @@ namespace PCA6408A {
     // write logical state of specified port bit
     this->pWire->beginTransmission(this->i2c_address);
       this->pWire->write(register_pointer);
-      if (value = HIGH) {
+      if (value == HIGH) {
         this->pWire->write((read_data | bitmask));
       }
       else {

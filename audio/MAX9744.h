@@ -41,7 +41,7 @@
   namespace MAX9744{
     namespace MAX9744Types {
       /*! @enum TwoWire error types */
-      typedef enum twi_error_type_t {
+      enum twi_error_type_t {
         NO_ERROR = 0,
         TX_BUFFER_OVERFLOW, 
         NACK_ADDRESS, 
@@ -202,10 +202,10 @@
                                const uint16_t nominal_zero_signal_level);
 
       private:
-        bool invert_mute;
         const uint8_t i2c_address;
         const uint8_t mute_p;
         const uint8_t shutdown_n;
+        bool invert_mute;
         
         // index for keeping track of the buffer used by decayBuffer32
         uint8_t buffer_index;

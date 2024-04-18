@@ -55,10 +55,10 @@ namespace MAX9744 {
 
   // class constructor for MAX9744 amplifier object
   MAX9744::MAX9744(uint8_t i2c_address, uint8_t mute_p, uint8_t shutdown_n, TwoWire *pWire) :
-    invert_mute(false), 
     i2c_address(i2c_address), 
     mute_p(mute_p), 
     shutdown_n(shutdown_n),
+    invert_mute(false), 
     buffer_index(0),
     vm_index_previous(DB_FAST_COEFFICIENT_COUNT >> 1) {
     this->shutdown();

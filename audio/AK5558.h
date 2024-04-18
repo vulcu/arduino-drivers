@@ -78,7 +78,7 @@
       };
 
       /*! @enum TwoWire error types */
-      typedef enum twi_error_type_t {
+      enum twi_error_type_t {
         NO_ERROR = 0,
         TX_BUFFER_OVERFLOW, 
         NACK_ADDRESS, 
@@ -143,9 +143,9 @@
         void unmute(void);
 
       private:
-        bool invert_mute;
         const uint8_t i2c_address;
         const uint8_t reset_n;
+        bool invert_mute;
         uint8_t active_config[8];
         static const uint8_t default_config[8] PROGMEM;
         TwoWire *pWire;

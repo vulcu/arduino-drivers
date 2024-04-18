@@ -26,9 +26,10 @@ namespace AK5558 {
 
 
   AK5558::AK5558(uint8_t i2c_address, uint8_t reset_n, TwoWire *pWire) :
-    invert_mute(false), 
     i2c_address(i2c_address), 
-    reset_n(reset_n) {
+    reset_n(reset_n),
+    invert_mute(false),
+    active_config{0x00} {
     this->shutdown();
     this->pWire = pWire;
     this->resetActiveConfig();

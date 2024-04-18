@@ -25,7 +25,7 @@ namespace DS1882 {
   DS1882::DS1882(uint8_t i2c_address, uint8_t enable_n, TwoWire* pWire) : 
     i2c_address(i2c_address), 
     enable_n(enable_n), 
-    channel_attenuation({0U}) {
+    channel_attenuation{0U} {
     this->shutdown();
     this->pWire = pWire;
   }

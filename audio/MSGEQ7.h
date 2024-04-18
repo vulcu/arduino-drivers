@@ -29,10 +29,10 @@
         void     read(uint16_t array_values[], const size_t array_size);
 
       private:
-        const bool    use_input_pullup;
+        const uint8_t strobe_p;
         const uint8_t dc_out;
         const uint8_t reset_p;
-        const uint8_t strobe_p;
+        const bool    use_input_pullup;
     };
   }
 

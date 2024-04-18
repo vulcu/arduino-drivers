@@ -48,7 +48,7 @@
   namespace CS4270 {
     namespace CS4270Types {
       /*! @enum TwoWire error types */
-      typedef enum twi_error_type_t {
+      enum twi_error_type_t {
         NO_ERROR = 0,
         TX_BUFFER_OVERFLOW, 
         NACK_ADDRESS, 
