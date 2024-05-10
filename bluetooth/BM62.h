@@ -27,10 +27,64 @@
     #include <avr/sleep.h>
   #endif
 
+  #define sizeof_member(type, member) (sizeof( ((type *)0)->member ))
+
   #define INIT_RESET_CYCLE_WAIT_TIME_MS (10U)
   #define TARGET_LENGTH_EQ_PRESET       (3U)
 
   namespace BM62 {
+    namespace BM62_Types {
+      // BM62 UART commands for media playback control
+      struct music_control_t {
+        const size_t size = 3U;
+
+        // < Music_Control (0x04): AVRCP Commands for Music Control >
+        const uint8_t play      [3U] = { 0x04, 0x00, 0x05 };
+        const uint8_t pause     [3U] = { 0x04, 0x00, 0x06 };
+        const uint8_t toggle    [3U] = { 0x04, 0x00, 0x07 };
+        const uint8_t stop      [3U] = { 0x04, 0x00, 0x08 };
+        const uint8_t next      [3U] = { 0x04, 0x00, 0x09 };
+        const uint8_t previous  [3U] = { 0x04, 0x00, 0x0A };
+      };
+
+      // BM62 UART commands for audio equalization control
+      struct eq_mode_t {
+        const size_t size = 3U;
+
+        // < EQ_Mode_Setting 0x1C: Set EQ Mode of BTM for audio playback >
+        const uint8_t off       [3U] = { 0x1C, 0x00, 0xFF };
+        const uint8_t soft      [3U] = { 0x1C, 0x01, 0xFF };
+        const uint8_t bass      [3U] = { 0x1C, 0x02, 0xFF };
+        const uint8_t treble    [3U] = { 0x1C, 0x03, 0xFF };
+        const uint8_t classical [3U] = { 0x1C, 0x04, 0xFF };
+        const uint8_t rock      [3U] = { 0x1C, 0x05, 0xFF };
+        const uint8_t jazz      [3U] = { 0x1C, 0x06, 0xFF };
+        const uint8_t pop       [3U] = { 0x1C, 0x07, 0xFF };
+        const uint8_t dance     [3U] = { 0x1C, 0x08, 0xFF };
+        const uint8_t rnb       [3U] = { 0x1C, 0x09, 0xFF };
+        const uint8_t user1     [3U] = { 0x1C, 0x0A, 0xFF };
+      };
+
+      // BM62 UART commands for system status and control
+      struct system_status_t {
+        const size_t size = 3U;
+
+        // < MMI action 0x5D: fast enter pairing mode (from non-off mode) >
+        const uint8_t fastEnterPairingMode [3U] = { 0x02, 0x00, 0x5D };
+      };
+
+      struct uart_command_t {
+        // BM62 UART syncword header for serial commands (probably 0xAA, may be 0x00AA)
+        // < EEPROM option (0xAE @ bit 4) adds “0x00” as wakeup byte in front of start byte >
+        const uint8_t uartSyncHeader [1U] = { 0xAA };
+
+        const music_control_t avrcp;
+        const eq_mode_t eq;
+        const system_status_t system;
+      };
+    }
+
+
     class BM62 {
       public:
         // These are the equalizer preset modes available on the BM62
@@ -77,6 +131,7 @@
         const uint8_t prgm_sense_n;
         const uint8_t reset_n;
         const uint8_t ind_a2dp_n;
+        const BM62_Types::uart_command_t uart;
         Stream* pSerial;
 
         uint8_t checksum(const uint8_t command[], const uint8_t command_length);

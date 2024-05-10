@@ -20,36 +20,38 @@
 #include "BM62.h"
 
 namespace BM62 {
+  using namespace BM62_Types;
+
   // BM62 UART syncword header for serial commands (probably 0xAA, may be 0x00AA)
   // < EEPROM option (0xAE @ bit 4) adds “0x00” as wakeup byte in front of start byte >
-  static const uint8_t serial_uart_sync_header [1] = { 0xAA };
+  // static const uint8_t serial_uart_sync_header [1] = { 0xAA };
 
   // BM62 UART commands for media playback control
   // < Music_Control (0x04): AVRCP Commands for Music Control >
-  static const uint8_t BM62_Play        [3] = { 0x04, 0x00, 0x05 };
-  static const uint8_t BM62_Pause       [3] = { 0x04, 0x00, 0x06 };
-  static const uint8_t BM62_Play_Toggle [3] = { 0x04, 0x00, 0x07 };
-  static const uint8_t BM62_Stop        [3] = { 0x04, 0x00, 0x08 };
-  static const uint8_t BM62_Next_Track  [3] = { 0x04, 0x00, 0x09 };
-  static const uint8_t BM62_Prev_Track  [3] = { 0x04, 0x00, 0x0A };
+  // static const uint8_t BM62_Play        [3] = { 0x04, 0x00, 0x05 };
+  // static const uint8_t BM62_Pause       [3] = { 0x04, 0x00, 0x06 };
+  // static const uint8_t BM62_Play_Toggle [3] = { 0x04, 0x00, 0x07 };
+  // static const uint8_t BM62_Stop        [3] = { 0x04, 0x00, 0x08 };
+  // static const uint8_t BM62_Next_Track  [3] = { 0x04, 0x00, 0x09 };
+  // static const uint8_t BM62_Prev_Track  [3] = { 0x04, 0x00, 0x0A };
 
   // BM62 UART commands for audio equalization control
   // < EQ_Mode_Setting 0x1C: Set EQ Mode of BTM for audio playback >
-  static const uint8_t BM62_EQ_Off       [3] = { 0x1C, 0x00, 0xFF };
-  static const uint8_t BM62_EQ_Soft      [3] = { 0x1C, 0x01, 0xFF };
-  static const uint8_t BM62_EQ_Bass      [3] = { 0x1C, 0x02, 0xFF };
-  static const uint8_t BM62_EQ_Treble    [3] = { 0x1C, 0x03, 0xFF };
-  static const uint8_t BM62_EQ_Classical [3] = { 0x1C, 0x04, 0xFF };
-  static const uint8_t BM62_EQ_Rock      [3] = { 0x1C, 0x05, 0xFF };
-  static const uint8_t BM62_EQ_Jazz      [3] = { 0x1C, 0x06, 0xFF };
-  static const uint8_t BM62_EQ_Pop       [3] = { 0x1C, 0x07, 0xFF };
-  static const uint8_t BM62_EQ_Dance     [3] = { 0x1C, 0x08, 0xFF };
-  static const uint8_t BM62_EQ_RnB       [3] = { 0x1C, 0x09, 0xFF };
-  static const uint8_t BM62_EQ_USER1     [3] = { 0x1C, 0x0A, 0xFF };
+  // static const uint8_t BM62_EQ_Off       [3] = { 0x1C, 0x00, 0xFF };
+  // static const uint8_t BM62_EQ_Soft      [3] = { 0x1C, 0x01, 0xFF };
+  // static const uint8_t BM62_EQ_Bass      [3] = { 0x1C, 0x02, 0xFF };
+  // static const uint8_t BM62_EQ_Treble    [3] = { 0x1C, 0x03, 0xFF };
+  // static const uint8_t BM62_EQ_Classical [3] = { 0x1C, 0x04, 0xFF };
+  // static const uint8_t BM62_EQ_Rock      [3] = { 0x1C, 0x05, 0xFF };
+  // static const uint8_t BM62_EQ_Jazz      [3] = { 0x1C, 0x06, 0xFF };
+  // static const uint8_t BM62_EQ_Pop       [3] = { 0x1C, 0x07, 0xFF };
+  // static const uint8_t BM62_EQ_Dance     [3] = { 0x1C, 0x08, 0xFF };
+  // static const uint8_t BM62_EQ_RnB       [3] = { 0x1C, 0x09, 0xFF };
+  // static const uint8_t BM62_EQ_USER1     [3] = { 0x1C, 0x0A, 0xFF };
 
   // BM62 UART commands for system status and control
   // < MMI action 0x5D: fast enter pairing mode (from non-off mode) >
-  static const uint8_t BM62_EnterPairingMode [3] = { 0x02, 0x00, 0x5D };
+  // static const uint8_t BM62_EnterPairingMode [3] = { 0x02, 0x00, 0x5D };
 
   BM62::BM62(uint8_t prgm_sense_n, uint8_t reset_n, uint8_t ind_a2dp_n, Stream *pSerial) :
     prgm_sense_n(prgm_sense_n), 
@@ -68,7 +70,8 @@ namespace BM62 {
   // put the BM62 back into pairing mode to permit pairing to new device
   void BM62::enterPairingMode(void) {
     if (this->isConnected()) {
-      this->writeSerialCommand(BM62_EnterPairingMode, sizeof(BM62_EnterPairingMode));
+      this->writeSerialCommand(this->uart.system.fastEnterPairingMode, 
+                               sizeof_member(system_status_t, fastEnterPairingMode));
     }
   }
 
@@ -105,50 +108,50 @@ namespace BM62 {
 
   // set audio equalizer mode setting to specified preset mode
   void BM62::setEqualizerPreset(eq_preset_t preset) {
-    uint8_t BM62_EQ_Preset[TARGET_LENGTH_EQ_PRESET];
+    uint8_t eq_instruction[(uint8_t)this->uart.eq.size];
     switch (preset) {
       case EQ_Off: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Off, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, this->uart.eq.off, this->uart.eq.size);
       } break;
 
       case EQ_Soft: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Soft, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, this->uart.eq.soft, this->uart.eq.size);
       } break;
 
       case EQ_Bass: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Bass, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, this->uart.eq.bass, this->uart.eq.size);
       } break;
 
       case EQ_Treble: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Treble, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, this->uart.eq.treble, this->uart.eq.size);
       } break;
 
       case EQ_Classical: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Classical, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, this->uart.eq.classical, this->uart.eq.size);
       } break;
 
       case EQ_Rock: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Rock, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, this->uart.eq.rock, this->uart.eq.size);
       } break;
 
       case EQ_Jazz: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Jazz, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, this->uart.eq.jazz, this->uart.eq.size);
       } break;
 
       case EQ_Pop: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Pop, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, this->uart.eq.pop, this->uart.eq.size);
       } break;
 
       case EQ_Dance: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Dance, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, this->uart.eq.dance, this->uart.eq.size);
       } break;
 
       case EQ_RnB: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_RnB, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, this->uart.eq.rnb, this->uart.eq.size);
       } break;
 
       case EQ_Custom: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_USER1, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, this->uart.eq.user1, this->uart.eq.size);
       } break;
 
       default: {
@@ -156,49 +159,49 @@ namespace BM62 {
       } break;
     }
     if (this->isConnected()) {
-      this->writeSerialCommand(BM62_EQ_Preset, sizeof(BM62_EQ_Preset));
+      this->writeSerialCommand(eq_instruction, this->uart.eq.size);
     }
   }
 
   // start playback from bluetooth-connected media device
   void BM62::play(void) {
     if (this->isConnected()) {
-      this->writeSerialCommand(BM62_Play, sizeof(BM62_Play));
+      this->writeSerialCommand(this->uart.avrcp.play, this->uart.avrcp.size);
     }
   }
 
   // pause playback from bluetooth-connected media device
   void BM62::pause(void) {
     if (this->isConnected()) {
-      this->writeSerialCommand(BM62_Pause, sizeof(BM62_Pause));
+      this->writeSerialCommand(this->uart.avrcp.pause, this->uart.avrcp.size);
     }
   }
 
   // media playback play/pause toggle (pauses if playing, plays if paused)
   void BM62::playPauseToggle(void) {
     if (this->isConnected()) {
-      this->writeSerialCommand(BM62_Play_Toggle, sizeof(BM62_Play_Toggle));
+      this->writeSerialCommand(this->uart.avrcp.toggle, this->uart.avrcp.size);
     }
   }
 
   // stop playback from bluetooth-connected media device
   void BM62::stop(void) {
     if (this->isConnected()) {
-      this->writeSerialCommand(BM62_Stop, sizeof(BM62_Stop));
+      this->writeSerialCommand(this->uart.avrcp.stop, this->uart.avrcp.size);
     }
   }
 
   // go to previous track on bluetooth-connected media device
   void BM62::previous(void) {
     if (this->isConnected()) {
-      this->writeSerialCommand(BM62_Prev_Track, sizeof(BM62_Prev_Track));
+      this->writeSerialCommand(this->uart.avrcp.previous, this->uart.avrcp.size);
     }
   }
 
   // go to next track on bluetooth-connected media device
   void BM62::next(void) {
     if (this->isConnected()) {
-      this->writeSerialCommand(BM62_Next_Track, sizeof(BM62_Next_Track));
+      this->writeSerialCommand(this->uart.avrcp.next, this->uart.avrcp.size);
     }
   }
 
@@ -242,21 +245,21 @@ namespace BM62 {
   // build the BM62 UART command array w/ checksum and write over serial UART
   void BM62::writeSerialCommand(const uint8_t instruction[], const size_t bytes_command) {
     // allocation size in bytes of the serial syncword
-    uint8_t bytes_syncword = sizeof(serial_uart_sync_header);
+    uint8_t bytes_syncword = sizeof_member(uart_command_t, uartSyncHeader);
 
     // allocation size in bytes of the length value (2 bytes) plus the CRC value (1 byte)
-    uint8_t bytes_length_and_crc = 3;
+    uint8_t bytes_length_and_crc = 3U;
 
     // create the command buffer, the size will always be equal to
     // [START(1-2 bytes) + LENGTH(2 bytes) + INSTRUCTION + CRC(1 byte)]
     uint8_t command[bytes_syncword + bytes_length_and_crc + bytes_command];
 
     // copy the serial UART syncword (either 0xAA or 0x00AA) to the command buffer
-    memcpy(command, serial_uart_sync_header, bytes_syncword);
+    memcpy(command, uart.uartSyncHeader, bytes_syncword);
     uint8_t indx = bytes_syncword;
 
     // copy 'target length' (total length minus syncword, length, and CRC) to command buffer
-    uint8_t  target_length [2] = { highByte(bytes_command), lowByte(bytes_command) };
+    uint8_t  target_length [2U] = { highByte(bytes_command), lowByte(bytes_command) };
     memcpy(command + indx, target_length, sizeof(target_length));
     indx += sizeof(target_length);
 
