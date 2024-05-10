@@ -27,8 +27,8 @@
     #include <avr/sleep.h>
   #endif
 
-  #define INIT_RESET_CYCLE_WAIT_TIME_MS (10U)
-  #define TARGET_LENGTH_EQ_PRESET       (3U)
+  #define BM62_INIT_RESET_CYCLE_WAIT_TIME_MS (10U)
+  #define BM62_BYTE_LENGTH_EQ_PRESET         (3U)
 
   namespace BM62 {
     class BM62 {

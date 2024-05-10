@@ -79,7 +79,7 @@ namespace BM62 {
     this->reset();
 
     // wait predefined number of ms, then take the BM62 out of reset
-    delay(INIT_RESET_CYCLE_WAIT_TIME_MS);
+    delay(BM62_INIT_RESET_CYCLE_WAIT_TIME_MS);
     this->enable();
     
     // initialize the BM62 programming sense line
@@ -105,50 +105,50 @@ namespace BM62 {
 
   // set audio equalizer mode setting to specified preset mode
   void BM62::setEqualizerPreset(eq_preset_t preset) {
-    uint8_t BM62_EQ_Preset[TARGET_LENGTH_EQ_PRESET];
+    uint8_t eq_instruction[BM62_BYTE_LENGTH_EQ_PRESET];
     switch (preset) {
       case EQ_Off: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Off, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, BM62_EQ_Off, BM62_BYTE_LENGTH_EQ_PRESET);
       } break;
 
       case EQ_Soft: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Soft, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, BM62_EQ_Soft, BM62_BYTE_LENGTH_EQ_PRESET);
       } break;
 
       case EQ_Bass: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Bass, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, BM62_EQ_Bass, BM62_BYTE_LENGTH_EQ_PRESET);
       } break;
 
       case EQ_Treble: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Treble, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, BM62_EQ_Treble, BM62_BYTE_LENGTH_EQ_PRESET);
       } break;
 
       case EQ_Classical: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Classical, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, BM62_EQ_Classical, BM62_BYTE_LENGTH_EQ_PRESET);
       } break;
 
       case EQ_Rock: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Rock, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, BM62_EQ_Rock, BM62_BYTE_LENGTH_EQ_PRESET);
       } break;
 
       case EQ_Jazz: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Jazz, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, BM62_EQ_Jazz, BM62_BYTE_LENGTH_EQ_PRESET);
       } break;
 
       case EQ_Pop: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Pop, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, BM62_EQ_Pop, BM62_BYTE_LENGTH_EQ_PRESET);
       } break;
 
       case EQ_Dance: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_Dance, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, BM62_EQ_Dance, BM62_BYTE_LENGTH_EQ_PRESET);
       } break;
 
       case EQ_RnB: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_RnB, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, BM62_EQ_RnB, BM62_BYTE_LENGTH_EQ_PRESET);
       } break;
 
       case EQ_Custom: {
-        memcpy(BM62_EQ_Preset, BM62_EQ_USER1, TARGET_LENGTH_EQ_PRESET);
+        memcpy(eq_instruction, BM62_EQ_USER1, BM62_BYTE_LENGTH_EQ_PRESET);
       } break;
 
       default: {
@@ -156,7 +156,7 @@ namespace BM62 {
       } break;
     }
     if (this->isConnected()) {
-      this->writeSerialCommand(BM62_EQ_Preset, sizeof(BM62_EQ_Preset));
+      this->writeSerialCommand(eq_instruction, sizeof(eq_instruction));
     }
   }
 
