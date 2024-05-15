@@ -192,7 +192,7 @@
         static const uint8_t default_config[12] PROGMEM;
         TwoWire *pWire;
 
-        /*! @brief Class constructor
+        /*! @brief Get the value of an 8-bit register
         *
         * @details A more elaborate description of the constructor.
         * 
@@ -202,7 +202,7 @@
         */
         uint8_t getRegister(PCA6408ATypes::register_pointer_t register_pointer);
 
-        /*! @brief Class constructor
+        /*! @brief Get value of a specific register bit
         *
         * @details A more elaborate description of the constructor.
         * 
@@ -213,7 +213,7 @@
         bool getRegisterBit(PCA6408ATypes::register_pointer_t register_pointer, 
                             register_bitmask_t bitmask);
 
-        /*! @brief Class constructor
+        /*! @brief Set the value of an 8-bit register
         *
         * @details A more elaborate description of the constructor.
         * 
@@ -222,7 +222,7 @@
         */
         void setRegister(PCA6408ATypes::register_pointer_t register_pointer, uint8_t value);
 
-        /*! @brief Class constructor
+        /*! @brief Set value of a specific register bit
         *
         * @details A more elaborate description of the constructor.
         * 
@@ -231,7 +231,7 @@
         */
         void setRegisterBit(PCA6408ATypes::register_pointer_t register_pointer, 
                             register_bitmask_t bitmask, 
-                            bool value); 
+                            bool value);
 
         /*! @brief Reset the PCA6408A configuration in memory
         *
