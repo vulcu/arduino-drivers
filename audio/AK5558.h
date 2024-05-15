@@ -9,11 +9,17 @@
   // Power-on delay of Internal PDN release. See note 2b) on p.55 of AK5558 datasheet.
   #define AK5558_INT_PDN_OSCCLK_DELAY_MICROS (850U)
 
-  // define the AK5558 I2C address, by default is hardware configured to 0x11
+  // define the AK5558 I2C address, by default is hardware configured to 0x10
   #define AK5558_DEFAULT_I2CADDR (0x10)
+
+  // cast AK5558 register bitmasks to generic type
+  #define AK5558_BM(bitmask) static_cast<register_bitmask_t>(bitmask)
 
   namespace AK5558 {
     namespace AK5558Types {
+      /*! @typedef Register bitmask for accessing specific control bits */
+      typedef uint8_t register_bitmask_t;
+
       /*! @enum Power Management Register */
       enum pwrmgmt1_bitmask_t {
         PW1_BM = (0x01 << 0),  
@@ -66,15 +72,28 @@
       };
 
       /*! @enum AK5558 register address index */
-      enum register_name_t {
-        PWRMGMT1 = 0,  //Power Management
-        PWRMGMT2,      //Channel Summing and Timing Reset
-        CONTROL1,      //Clocking, DAI Mode, HP Filter
-        CONTROL2,      //TDM Mode Selection
-        CONTROL3,      //LP Filter, DSD Mode
-        DSD,           //DSD Configuration
-        TEST1,         //Test Register (must be 0x00)
-        TEST2,         //Test Register (must be 0x00)
+      enum register_pointer_t {
+        PWRMGMT1 = 0x00,  //Power Management
+        PWRMGMT2 = 0x01,  //Channel Summing and Timing Reset
+        CONTROL1 = 0x02,  //Clocking, DAI Mode, HP Filter
+        CONTROL2 = 0x03,  //TDM Mode Selection
+        CONTROL3 = 0x04,  //LP Filter, DSD Mode
+        DSD      = 0x05,  //DSD Configuration
+        TEST1    = 0x06,  //Test Register (must be 0x00)
+        TEST2    = 0x07,  //Test Register (must be 0x00)
+      };
+
+      /*! @enum AK5558 channel selection */
+      enum channel_select_t {
+        All = 0,
+        Ch1 = 1,  
+        Ch2 = 2, 
+        Ch3 = 3, 
+        Ch4 = 4, 
+        Ch5 = 5, 
+        Ch6 = 6, 
+        Ch7 = 7,  
+        Ch8 = 8, 
       };
 
       /*! @enum TwoWire error types */
@@ -94,6 +113,8 @@
     */
     class AK5558 {
       public:
+        AK5558Types::channel_select_t channel;
+
         /*! @brief Class constructor
         *
         * @details A more elaborate description of the constructor.
@@ -118,37 +139,77 @@
         */
         void enable(void);
 
-        /*! @brief  Disable the AK5558 by placing it in reset
+        /*! @brief  Shutdown AK5558 using the internal power control
         *
         * @details A more elaborate description of the class member.
         */
         void shutdown(void);
 
-        /*! @brief  Invert mute signal logic
+        /*! @brief  Reset the AK5558 using the reset logic signal
         *
         * @details A more elaborate description of the class member.
         */
-        void invertMuteLogic(const bool invert_mute);
+        void reset(void);
 
         /*! @brief  Unmute the AK5558
         *
         * @details A more elaborate description of the class member.
         */
-        void mute(void);
+        void mute(AK5558Types::channel_select_t channel);
         
         /*! @brief  Unmute the AK5558
         *
         * @details A more elaborate description of the class member.
         */
-        void unmute(void);
+        void unmute(AK5558Types::channel_select_t channel);
 
       private:
         const uint8_t i2c_address;
         const uint8_t reset_n;
-        bool invert_mute;
         uint8_t active_config[8];
         static const uint8_t default_config[8] PROGMEM;
         TwoWire *pWire;
+
+        /*! @brief Get the value of an 8-bit register
+        *
+        * @details A more elaborate description of the constructor.
+        * 
+        * @param input_port The input port register bit to read
+        * 
+        * @returns 
+        */
+        uint8_t getRegister(AK5558Types::register_pointer_t register_pointer);
+
+        /*! @brief Get value of a specific register bit
+        *
+        * @details A more elaborate description of the constructor.
+        * 
+        * @param input_port The input port register bit to read
+        * 
+        * @returns 
+        */
+        bool getRegisterBit(AK5558Types::register_pointer_t register_pointer, 
+                            AK5558Types::register_bitmask_t bitmask);
+
+        /*! @brief Set the value of an 8-bit register
+        *
+        * @details A more elaborate description of the constructor.
+        * 
+        * @param output_port The output port register bit to write
+        * @param value       The boolean value to write (0 or 1)
+        */
+        void setRegister(AK5558Types::register_pointer_t register_pointer, uint8_t value);
+
+        /*! @brief Set value of a specific register bit
+        *
+        * @details A more elaborate description of the constructor.
+        * 
+        * @param output_port The output port register bit to write
+        * @param value       The boolean value to write (0 or 1)
+        */
+        void setRegisterBit(AK5558Types::register_pointer_t register_pointer, 
+                            AK5558Types::register_bitmask_t bitmask, 
+                            bool value); 
 
         /*! @brief Reset the AK5558 configuration in memory
         *
