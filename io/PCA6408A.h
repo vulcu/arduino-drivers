@@ -85,102 +85,102 @@
         } polarity;
 
         /*! @brief Class constructor
-        *
-        * @details A more elaborate description of the constructor.
-        * 
-        * @param i2c_address The physical device's I2C address
-        * @param reset_n     The microcontroller pin connected to the device RESET_L next
-        * @param pWire       A pointer to an instance of the TwoWire class
-        */
+         *
+         * @details A more elaborate description of the constructor.
+         * 
+         * @param i2c_address The physical device's I2C address
+         * @param reset_n     The microcontroller pin connected to the device RESET_L next
+         * @param pWire       A pointer to an instance of the TwoWire class
+         */
         PCA6408A(const uint8_t i2c_address, 
                   const uint8_t reset_n, 
                   const uint8_t interrupt_n, 
                   TwoWire* pWire);
 
         /*! @brief  Initialize the PCA6408A
-        *
-        * @details Initialize the device and write default config values to all registers
-        * 
-        * @warning This will reset all device registers to the default configuration 
-        */
+         *
+         * @details Initialize the device and write default config values to all registers
+         * 
+         * @warning This will reset all device registers to the default configuration 
+         */
         bool init(void);
 
         /*! @brief  Enable the PCA6408A by taking it out of reset
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         void enable(void);
 
         /*! @brief  Disable the PCA6408A by placing it in reset
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         void shutdown(void);
 
         /*! @brief  Disable the PCA6408A by placing it in reset
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         bool isAgileIoAvailable(void);
 
         /*! @brief  Disable the PCA6408A by placing it in reset
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         uint8_t readInput(void);
 
         /*! @brief  Disable the PCA6408A by placing it in reset
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         bool readInputPin(register_bitmask_t port_pin);
 
         /*! @brief  Disable the PCA6408A by placing it in reset
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         void writeOutput(uint8_t value);
 
         /*! @brief  Disable the PCA6408A by placing it in reset
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         void writeOutputPin(register_bitmask_t port_pin, bool value);
         
         /*! @brief  Disable the PCA6408A by placing it in reset
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         void setPortPinAsInput(register_bitmask_t port_pin);
         
         /*! @brief  Disable the PCA6408A by placing it in reset
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         void setAllPinsAsInput(void);
 
         /*! @brief  Disable the PCA6408A by placing it in reset
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         void setPortPinAsOutput(register_bitmask_t port_pin);
 
         /*! @brief  Disable the PCA6408A by placing it in reset
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         void setAllPinsAsOutput(void);
 
         /*! @brief  Disable the PCA6408A by placing it in reset
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         void setPortPinPolarity(register_bitmask_t port_pin, polarity_inversion_t polarity);
 
         /*! @brief  Disable the PCA6408A by placing it in reset
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         void setAllPinsPolarity(polarity_inversion_t polarity);
 
       private:
@@ -193,42 +193,42 @@
         TwoWire *pWire;
 
         /*! @brief Get the value of an 8-bit register
-        *
-        * @details A more elaborate description of the constructor.
-        * 
-        * @param input_port The input port register bit to read
-        * 
-        * @returns 
-        */
+         *
+         * @details A more elaborate description of the constructor.
+         * 
+         * @param register_pointer_t The input port register bit to read
+         * 
+         * @returns 
+         */
         uint8_t getRegister(PCA6408ATypes::register_pointer_t register_pointer);
 
         /*! @brief Get value of a specific register bit
-        *
-        * @details A more elaborate description of the constructor.
-        * 
-        * @param input_port The input port register bit to read
-        * 
-        * @returns 
-        */
+         *
+         * @details A more elaborate description of the constructor.
+         * 
+         * @param register_pointer_t The input port register to read
+         * @param register_bitmask_t The register bit index to read
+         */
         bool getRegisterBit(PCA6408ATypes::register_pointer_t register_pointer, 
                             register_bitmask_t bitmask);
 
         /*! @brief Set the value of an 8-bit register
-        *
-        * @details A more elaborate description of the constructor.
-        * 
-        * @param output_port The output port register bit to write
-        * @param value       The boolean value to write (0 or 1)
-        */
+         *
+         * @details A more elaborate description of the constructor.
+         * 
+         * @param register_pointer_t The output port register to write
+         * @param uint8_t            The boolean value to write (0 or 1)
+         */
         void setRegister(PCA6408ATypes::register_pointer_t register_pointer, uint8_t value);
 
         /*! @brief Set value of a specific register bit
-        *
-        * @details A more elaborate description of the constructor.
-        * 
-        * @param output_port The output port register bit to write
-        * @param value       The boolean value to write (0 or 1)
-        */
+         *
+         * @details A more elaborate description of the constructor.
+         * 
+         * @param register_pointer_t The output port register to write
+         * @param register_bitmask_t The register bit index to write
+         * @param bool               The boolean value to write (0 or 1)
+         */
         void setRegisterBit(PCA6408ATypes::register_pointer_t register_pointer, 
                             register_bitmask_t bitmask, 
                             bool value);
@@ -244,12 +244,12 @@
                                           PCA6408ATypes::register_pointer_t register_pointer);
 
         /*! @brief Reset the PCA6408A configuration in memory
-        *
-        * @details Reset the device configuration in SRAM to the default configuration.
-        * 
-        * @warning This will reset the device configuration in memory. It will
-        *          not apply these changes to the physical device registers.
-        */
+         *
+         * @details Reset the device configuration in SRAM to the default configuration.
+         * 
+         * @warning This will reset the device configuration in memory. It will
+         *          not apply these changes to the physical device registers.
+         */
         void resetActiveConfig(void);
     };
   }
