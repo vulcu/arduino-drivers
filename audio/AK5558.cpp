@@ -101,11 +101,11 @@ namespace AK5558 {
       pinMode(this->reset_n, OUTPUT);
       digitalWrite(this->reset_n, HIGH);
     }
-    this->setRegisterBit(PWRMGMT2, AK5558_BM(RSTN_BM), HIGH);
+    this->setRegisterBit(PWRMGMT2, register_bm(RSTN_BM), HIGH);
   }
 
   void AK5558::shutdown(void) {
-    this->setRegisterBit(PWRMGMT2, AK5558_BM(RSTN_BM), LOW);
+    this->setRegisterBit(PWRMGMT2, register_bm(RSTN_BM), LOW);
   }
 
   void AK5558::reset(void) {

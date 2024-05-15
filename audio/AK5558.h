@@ -12,8 +12,10 @@
   // define the AK5558 I2C address, by default is hardware configured to 0x10
   #define AK5558_DEFAULT_I2CADDR (0x10)
 
-  // cast AK5558 register bitmasks to generic type
-  #define AK5558_BM(bitmask) static_cast<register_bitmask_t>(bitmask)
+  // cast register-specific bitmasks as generic type
+  #ifndef register_bm
+    #define register_bm(bitmask) static_cast<register_bitmask_t>(bitmask)
+  #endif
 
   namespace AK5558 {
     namespace AK5558Types {
