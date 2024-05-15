@@ -54,40 +54,22 @@ namespace AK5558 {
     }
 
     // configure channel summing and timing reset
-    this->pWire->beginTransmission(this->i2c_address);
-      this->pWire->write(PWRMGMT2);
-      this->pWire->write(pgm_read_byte(&(this->default_config[PWRMGMT2])));
-    this->pWire->endTransmission();
+    this->writeDefaultConfigToRegister(PWRMGMT2);
 
     // configure clocking, DAI mode, HP filter
-    this->pWire->beginTransmission(this->i2c_address);
-      this->pWire->write(CONTROL1);
-      this->pWire->write(pgm_read_byte(&(this->default_config[CONTROL1])));
-    this->pWire->endTransmission();
+    this->writeDefaultConfigToRegister(CONTROL1);
 
     // configure TDM mode selection
-    this->pWire->beginTransmission(this->i2c_address);
-      this->pWire->write(CONTROL2);
-      this->pWire->write(pgm_read_byte(&(this->default_config[CONTROL2])));
-    this->pWire->endTransmission();
+    this->writeDefaultConfigToRegister(CONTROL2);
 
     // configure LP filter and DSD mode
-    this->pWire->beginTransmission(this->i2c_address);
-      this->pWire->write(CONTROL3);
-      this->pWire->write(pgm_read_byte(&(this->default_config[CONTROL3])));
-    this->pWire->endTransmission();
+    this->writeDefaultConfigToRegister(CONTROL3);
 
     //  configure DSD frequency, phase, clocking
-    this->pWire->beginTransmission(this->i2c_address);
-      this->pWire->write(DSD);
-      this->pWire->write(pgm_read_byte(&(this->default_config[DSD])));
-    this->pWire->endTransmission();
+    this->writeDefaultConfigToRegister(DSD);
 
     // configure power management state for channels 1-8
-    this->pWire->beginTransmission(this->i2c_address);
-      this->pWire->write(PWRMGMT1);
-      this->pWire->write(pgm_read_byte(&(this->default_config[PWRMGMT1])));
-    this->pWire->endTransmission();
+    this->writeDefaultConfigToRegister(PWRMGMT1);
 
     // set the active configuration to default configuration values
     this->resetActiveConfig();
@@ -168,6 +150,13 @@ namespace AK5558 {
       else {
         this->pWire->write((read_data & ~bitmask));
       }
+    this->pWire->endTransmission();
+  }
+
+  void AK5558::writeDefaultConfigToRegister(register_pointer_t register_pointer) {
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(register_pointer);
+      this->pWire->write(pgm_read_byte(&(this->default_config[register_pointer])));
     this->pWire->endTransmission();
   }
 

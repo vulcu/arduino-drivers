@@ -118,51 +118,51 @@
         AK5558Types::channel_select_t channel;
 
         /*! @brief Class constructor
-        *
-        * @details A more elaborate description of the constructor.
-        * 
-        * @param i2c_address The physical device's I2C address
-        * @param reset_n     The microcontroller pin connected to the device RESET_L next
-        * @param pWire       A pointer to an instance of the TwoWire class
-        */
+         *
+         * @details A more elaborate description of the constructor.
+         * 
+         * @param i2c_address The physical device's I2C address
+         * @param reset_n     The microcontroller pin connected to the device RESET_L next
+         * @param pWire       A pointer to an instance of the TwoWire class
+         */
         AK5558(const uint8_t i2c_address, const uint8_t reset_n, TwoWire *pWire);
 
         /*! @brief  Initialize the AK5558
-        *
-        * @details Initialize the device and write default config values to all registers
-        * 
-        * @warning This will reset all device registers to the default configuration 
-        */
+         *
+         * @details Initialize the device and write default config values to all registers
+         * 
+         * @warning This will reset all device registers to the default configuration 
+         */
         bool init(void);
 
         /*! @brief  Enable the AK5558 by taking it out of reset
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         void enable(void);
 
         /*! @brief  Shutdown AK5558 using the internal power control
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         void shutdown(void);
 
         /*! @brief  Reset the AK5558 using the reset logic signal
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         void reset(void);
 
         /*! @brief  Unmute the AK5558
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         void mute(AK5558Types::channel_select_t channel);
         
         /*! @brief  Unmute the AK5558
-        *
-        * @details A more elaborate description of the class member.
-        */
+         *
+         * @details A more elaborate description of the class member.
+         */
         void unmute(AK5558Types::channel_select_t channel);
 
       private:
@@ -173,53 +173,63 @@
         TwoWire *pWire;
 
         /*! @brief Get the value of an 8-bit register
-        *
-        * @details A more elaborate description of the constructor.
-        * 
-        * @param input_port The input port register bit to read
-        * 
-        * @returns 
-        */
+          *
+         * @details A more elaborate description of the constructor.
+         * 
+         * @param register_pointer_t The input port register bit to read
+         * 
+         * @returns 
+         */
         uint8_t getRegister(AK5558Types::register_pointer_t register_pointer);
 
         /*! @brief Get value of a specific register bit
-        *
-        * @details A more elaborate description of the constructor.
-        * 
-        * @param input_port The input port register bit to read
-        * 
-        * @returns 
-        */
+         *
+         * @details A more elaborate description of the constructor.
+         * 
+         * @param register_pointer_t The input port register to read
+         * @param register_bitmask_t The register bit index to read
+         * 
+         * @returns 
+         */
         bool getRegisterBit(AK5558Types::register_pointer_t register_pointer, 
                             AK5558Types::register_bitmask_t bitmask);
 
         /*! @brief Set the value of an 8-bit register
-        *
-        * @details A more elaborate description of the constructor.
-        * 
-        * @param output_port The output port register bit to write
-        * @param value       The boolean value to write (0 or 1)
-        */
+         *
+         * @details A more elaborate description of the constructor.
+         * 
+         * @param register_pointer_t The output port register to write
+         * @param uint8_t            The boolean value to write (0 or 1)
+         */
         void setRegister(AK5558Types::register_pointer_t register_pointer, uint8_t value);
 
         /*! @brief Set value of a specific register bit
-        *
-        * @details A more elaborate description of the constructor.
-        * 
-        * @param output_port The output port register bit to write
-        * @param value       The boolean value to write (0 or 1)
-        */
+         *
+         * @details A more elaborate description of the constructor.
+         * 
+         * @param register_pointer_t The output port register to write
+         * @param register_bitmask_t The register bit index to write
+         * @param bool               The boolean value to write (0 or 1)
+         */
         void setRegisterBit(AK5558Types::register_pointer_t register_pointer, 
                             AK5558Types::register_bitmask_t bitmask, 
-                            bool value); 
+                            bool value);
+
+        /*! @brief Reset an AK5558 register to the value specified by the default config
+         *
+         * @details A more elaborate description of the constructor.
+         * 
+         * @param register_pointer_t The output port register to write
+         */
+        void writeDefaultConfigToRegister(AK5558Types::register_pointer_t register_pointer);
 
         /*! @brief Reset the AK5558 configuration in memory
-        *
-        * @details Reset the device configuration in SRAM to the default configuration.
-        * 
-        * @warning This will reset the device configuration in memory. It will
-        *          not apply these changes to the physical device registers.
-        */
+         *
+         * @details Reset the device configuration in SRAM to the default configuration.
+         * 
+         * @warning This will reset the device configuration in memory. It will
+         *          not apply these changes to the physical device registers.
+         */
         void resetActiveConfig(void);
     };
   }
