@@ -87,15 +87,15 @@
 
       /*! @enum AK5558 channel selection */
       enum channel_select_t {
-        All = 0,
-        Ch1 = 1,  
-        Ch2 = 2, 
-        Ch3 = 3, 
-        Ch4 = 4, 
-        Ch5 = 5, 
-        Ch6 = 6, 
-        Ch7 = 7,  
-        Ch8 = 8, 
+        Ch1 = 0,  
+        Ch2 = 1, 
+        Ch3 = 2, 
+        Ch4 = 3, 
+        Ch5 = 4, 
+        Ch6 = 5, 
+        Ch7 = 6,  
+        Ch8 = 7, 
+        All = 8,
       };
 
       /*! @enum TwoWire error types */
