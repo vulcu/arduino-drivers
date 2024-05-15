@@ -57,16 +57,10 @@ namespace PCA6408A {
     }
 
     // configure polarity inversion
-    this->pWire->beginTransmission(this->i2c_address);
-      this->pWire->write(POLARITY_INVERSION_PTR);
-      this->pWire->write(pgm_read_byte(&(this->default_config[POLARITY_INVERSION])));
-    this->pWire->endTransmission();
+    this->writeDefaultConfigToRegister(POLARITY_INVERSION, POLARITY_INVERSION_PTR);
 
     // configure pin I/O direction
-    this->pWire->beginTransmission(this->i2c_address);
-      this->pWire->write(CONFIGURATION_PTR);
-      this->pWire->write(pgm_read_byte(&(this->default_config[CONFIGURATION])));
-    this->pWire->endTransmission();
+    this->writeDefaultConfigToRegister(CONFIGURATION, CONFIGURATION_PTR);
 
     // configure output drive strength [Port 0:3] (available iff IC is NXP PCAL6408A)
     this->pWire->beginTransmission(this->i2c_address);
@@ -82,40 +76,22 @@ namespace PCA6408A {
       this->agile_io_available = true;
 
       // configure output drive strength [Port 4:7] (available iff IC is NXP PCAL6408A)
-      this->pWire->beginTransmission(this->i2c_address);
-        this->pWire->write(DRIVE_STRENGTH_1_PTR);
-        this->pWire->write(pgm_read_byte(&(this->default_config[DRIVE_STRENGTH_1])));
-      this->pWire->endTransmission();
+      this->writeDefaultConfigToRegister(DRIVE_STRENGTH_1, DRIVE_STRENGTH_1_PTR);
 
       // configure input port latching
-      this->pWire->beginTransmission(this->i2c_address);
-        this->pWire->write(INPUT_LATCH_PTR);
-        this->pWire->write(pgm_read_byte(&(this->default_config[INPUT_LATCH])));
-      this->pWire->endTransmission();
+      this->writeDefaultConfigToRegister(INPUT_LATCH, INPUT_LATCH_PTR);
 
       // configure pull-up/pull-down enable
-      this->pWire->beginTransmission(this->i2c_address);
-        this->pWire->write(PULLUP_PULLDOWN_EN_PTR);
-        this->pWire->write(pgm_read_byte(&(this->default_config[PULLUP_PULLDOWN_EN])));
-      this->pWire->endTransmission();
+      this->writeDefaultConfigToRegister(PULLUP_PULLDOWN_EN, PULLUP_PULLDOWN_EN_PTR);
 
       // configure pull-up/pull-down selection
-      this->pWire->beginTransmission(this->i2c_address);
-        this->pWire->write(PULLUP_PULLDOWN_SEL_PTR);
-        this->pWire->write(pgm_read_byte(&(this->default_config[PULLUP_PULLDOWN_SEL])));
-      this->pWire->endTransmission();
+      this->writeDefaultConfigToRegister(PULLUP_PULLDOWN_SEL, PULLUP_PULLDOWN_SEL_PTR);
 
       // configure interrupt mask
-      this->pWire->beginTransmission(this->i2c_address);
-        this->pWire->write(INTERRUPT_MASK_PTR);
-        this->pWire->write(pgm_read_byte(&(this->default_config[INTERRUPT_MASK])));
-      this->pWire->endTransmission();
+      this->writeDefaultConfigToRegister(INTERRUPT_MASK, INTERRUPT_MASK_PTR);
 
       // configure input port
-      this->pWire->beginTransmission(this->i2c_address);
-        this->pWire->write(OUTPUT_PORT_CONFIG_PTR);
-        this->pWire->write(pgm_read_byte(&(this->default_config[OUTPUT_PORT_CONFIG])));
-      this->pWire->endTransmission();
+      this->writeDefaultConfigToRegister(OUTPUT_PORT_CONFIG, OUTPUT_PORT_CONFIG_PTR);
     }
 
     this->resetActiveConfig();
@@ -234,6 +210,14 @@ namespace PCA6408A {
       else {
         this->pWire->write((read_data & ~bitmask));
       }
+    this->pWire->endTransmission();
+  }
+
+  void PCA6408A::writeDefaultConfigToRegister(register_name_t register_name, 
+                                              register_pointer_t register_pointer) {
+    this->pWire->beginTransmission(this->i2c_address);
+      this->pWire->write(register_pointer);
+      this->pWire->write(pgm_read_byte(&(this->default_config[register_name])));
     this->pWire->endTransmission();
   }
 

@@ -233,6 +233,16 @@
                             register_bitmask_t bitmask, 
                             bool value);
 
+        /*! @brief Reset an AK5558 register to the value specified by the default config
+         *
+         * @details A more elaborate description of the constructor.
+         * 
+         * @param register_name_t    The name of the output port register to write
+         * @param register_pointer_t The output port register to write
+         */
+        void writeDefaultConfigToRegister(PCA6408ATypes::register_name_t register_name,
+                                          PCA6408ATypes::register_pointer_t register_pointer);
+
         /*! @brief Reset the PCA6408A configuration in memory
         *
         * @details Reset the device configuration in SRAM to the default configuration.
