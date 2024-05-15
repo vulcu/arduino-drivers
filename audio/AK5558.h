@@ -166,10 +166,20 @@
         void unmute(AK5558Types::channel_select_t channel);
 
       private:
+        /*! @brief Default register values for use during initialization
+         *
+         * @details The 'default' values configure the device as follows:
+         *         	- Reg 0x00: 0xFF (all channels power on)
+		     *          - Reg 0x01: 0x01 (normal operation, summation disabled)
+		     *          - Reg 0x02: 0x35 (normal speed, 24MHz MCLK, 32-bit MSB)
+		     *          - Reg 0x03: 0x40 (TDM256)
+         *          - Reg 0x04: 0x00 (sharp roll-off, normal delay, PCM mode)
+         */
+        static const uint8_t default_config[8] PROGMEM;
+
         const uint8_t i2c_address;
         const uint8_t reset_n;
         uint8_t active_config[8];
-        static const uint8_t default_config[8] PROGMEM;
         TwoWire *pWire;
 
         /*! @brief Get the value of an 8-bit register
@@ -178,7 +188,7 @@
          * 
          * @param register_pointer_t The input port register bit to read
          * 
-         * @returns 
+         * @returns uint8_t 
          */
         uint8_t getRegister(AK5558Types::register_pointer_t register_pointer);
 
@@ -189,7 +199,7 @@
          * @param register_pointer_t The input port register to read
          * @param register_bitmask_t The register bit index to read
          * 
-         * @returns 
+         * @returns bool
          */
         bool getRegisterBit(AK5558Types::register_pointer_t register_pointer, 
                             AK5558Types::register_bitmask_t bitmask);

@@ -10,8 +10,7 @@
 namespace AK5558 {
   using namespace AK5558Types;
 
-  // AK5558 default register values for initialization
-  // Values are selected to work with MCHStreamer TDM I/O
+  // default register values for use during initialization
   const uint8_t AK5558::default_config[8] PROGMEM = 
   {
     0xFF,                 // Power Management
