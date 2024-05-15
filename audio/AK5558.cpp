@@ -29,7 +29,7 @@ namespace AK5558 {
     i2c_address(i2c_address), 
     reset_n(reset_n),
     active_config{0x00} {
-    this->shutdown();
+    this->reset();
     this->pWire = pWire;
     this->resetActiveConfig();
   }
@@ -37,7 +37,7 @@ namespace AK5558 {
   /// TODO: make audio IO configurable during init instead of defaulting to TDM256
   bool AK5558::init(void) {
     // delay AK5558 enable to ensure correct initialization (datasheet pp.55-56)
-    this->shutdown();
+    this->reset();
     delayMicroseconds(100);
     this->enable();
     delayMicroseconds(AK5558_INT_PDN_OSCCLK_DELAY_MICROS);
