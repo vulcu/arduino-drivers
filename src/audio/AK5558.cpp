@@ -94,21 +94,21 @@ namespace AK5558 {
     digitalWrite(this->reset_n, LOW);
   }
 
-  void AK5558::mute(channel_select_t channel) {
-    if (channel == All) {
+  void AK5558::mute(channel_t::channel_select_t channel) {
+    if (channel == channel_select_t::All) {
       this->setRegister(PWRMGMT1, 0x00);
     }
     else {
-      this->setRegisterBit(PWRMGMT1, register_bm(PW1_BM << channel), LOW);
+      this->setRegisterBit(PWRMGMT1, register_bm(PW1_BM << (uint8_t)channel), LOW);
     }
   }
 
-  void AK5558::unmute(channel_select_t channel) {
-    if (channel == All) {
+  void AK5558::unmute(channel_t::channel_select_t channel) {
+    if (channel == channel_select_t::All) {
       this->setRegister(PWRMGMT1, 0xFF);
     }
     else {
-      this->setRegisterBit(PWRMGMT1, register_bm(PW1_BM << channel), HIGH);
+      this->setRegisterBit(PWRMGMT1, register_bm(PW1_BM << (uint8_t)channel), HIGH);
     }
   }
 

@@ -86,16 +86,18 @@
       };
 
       /*! @enum AK5558 channel selection */
-      enum channel_select_t {
-        Ch1 = 0,  
-        Ch2 = 1, 
-        Ch3 = 2, 
-        Ch4 = 3, 
-        Ch5 = 4, 
-        Ch6 = 5, 
-        Ch7 = 6,  
-        Ch8 = 7, 
-        All = 8,
+      struct channel_t {
+        enum class channel_select_t: uint8_t {
+          Ch1 = 0,  
+          Ch2 = 1, 
+          Ch3 = 2, 
+          Ch4 = 3, 
+          Ch5 = 4, 
+          Ch6 = 5, 
+          Ch7 = 6,  
+          Ch8 = 7, 
+          All = 8,
+        };
       };
 
       /*! @enum TwoWire error types */
@@ -115,7 +117,7 @@
     */
     class AK5558 {
       public:
-        AK5558Types::channel_select_t channel;
+        AK5558Types::channel_t channel;
 
         /*! @brief Class constructor
          *
@@ -157,13 +159,13 @@
          *
          * @details A more elaborate description of the class member.
          */
-        void mute(AK5558Types::channel_select_t channel);
+        void mute(AK5558Types::channel_t::channel_select_t channel);
         
         /*! @brief  Unmute the AK5558
          *
          * @details A more elaborate description of the class member.
          */
-        void unmute(AK5558Types::channel_select_t channel);
+        void unmute(AK5558Types::channel_t::channel_select_t channel);
 
       private:
         /*! @brief Default register values for use during initialization
