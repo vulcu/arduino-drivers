@@ -62,7 +62,7 @@
 
         /*! @brief Class constructor
         *
-        * @details A more elaborate description of the constructor.
+        * @details Create an instance of the class to represent a single DS1882 hardware device
         * 
         * @param i2c_address The physical device's I2C address
         * @param reset_n     The microcontroller pin connected to the device RESET_L next
@@ -78,43 +78,36 @@
         */
         bool init(void);
 
-        /*! @brief  Initialize the DS1882
+        /*! @brief  Enable the DS1882
         *
-        * @details Initialize the device and write default config values to all registers
-        * 
-        * @warning This will reset all device registers to the default configuration 
+        * @details Take the device out of hardware reset by setting 'enable_n' pin HIGH
         */
         void enable(void);
 
-        /*! @brief  Initialize the DS1882
+        /*! @brief  Shutdown the DS1882
         *
-        * @details Initialize the device and write default config values to all registers
-        * 
-        * @warning This will reset all device registers to the default configuration 
+        * @details Put the device into hardware reset by setting 'enable_n' pin LOW
         */
         void shutdown(void);
 
-        /*! @brief  Initialize the DS1882
+        /*! @brief  Mute the DS1882
         *
-        * @details Initialize the device and write default config values to all registers
-        * 
-        * @warning This will reset all device registers to the default configuration 
+        * @details Set both DS1882 channels to the minimum volume level (0)
         */
         void mute(void);
 
-        /*! @brief  Initialize the DS1882
+        /*! @brief  Unmute the DS1882
         *
-        * @details Initialize the device and write default config values to all registers
-        * 
-        * @warning This will reset all device registers to the default configuration 
+        * @details Set both DS1882 channels to their most recently set value
         */
         void unmute(void);
 
-        /*! @brief  Initialize the DS1882
+        /*! @brief  Set the DS1882 volume (aka potetiometer position)
         *
-        * @details Initialize the device and write default config values to all registers
+        * @details Set volume level of the DS1882, from 0-63 and for either or both channels
         * 
-        * @warning This will reset all device registers to the default configuration 
+        * @param value    The desired volume setting (0-63)
+        * @param channel  The channel to apply this setting to (using channels_t)
         */
         void volume(uint8_t value, channels_t channel);
 
