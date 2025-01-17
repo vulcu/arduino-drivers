@@ -35,12 +35,15 @@ namespace AD5290 {
 
     // set potentiometer value to midpoint value and read back to ensure SPI is working
     // the data is transmitted MSB first, so 0xAA should be clocked back into receive buffer
-    uint16_t spi_received_value = SPI.transfer(0xAA00 | ((uint16_t)AD5290_MIDPOINT_WIPER_VALUE));
+    uint16_t spi_received_value = SPI.transfer(0xAA00);
+
+    // repeat transfer to ensure that up to two daisy-chained devices are initialized correctly
+    SPI.transfer((uint16_t)AD5290_MIDPOINT_WIPER_VALUE + ((uint16_t)AD5290_MIDPOINT_WIPER_VALUE << 8));
 
     // end the SPI transaction and release the SPI bus
     this->endTransaction();
 
-    this->wiper_value = AD5290_MIDPOINT_WIPER_VALUE;
+    this->wiper_value = (uint16_t)AD5290_MIDPOINT_WIPER_VALUE;
 
     // use the first SPI transaction during init to check if communication is working
     if (lowByte(spi_received_value) != 0xAA) {
@@ -53,21 +56,15 @@ namespace AD5290 {
     return true;
   }
 
-  // get the existing wiper position of the AD5290
-  // TODO: this may not work due depending on design of AD5290 registers, needs testing
-  uint8_t AD5290::get(void) {
-    // return the current wiper position value of the digital potentiometer
+  // set a signle potentiometer to a value between 0 [min] and 255 [max]
+  void AD5290::set(uint8_t wiper_value) {
+    // set digital potentiometer wiper to the specified value
     this->beginTransaction();
-
-    // put data into the AD5290 SPI buffer 
-    uint8_t spi_received_value = SPI.transfer(this->wiper_value);
-    SPI.transfer(spi_received_value);
+    this->wiper_value = (uint16_t)wiper_value;
+    SPI.transfer(this->wiper_value);
     this->endTransaction();
-    return spi_received_value;
   }
-
-  // set the potentiometers to a value between 0 [min] and 63 [max]
-  void AD5290::set(uint8_t wiper_value) {  
+  void AD5290::set(uint16_t wiper_value) {  
     // set digital potentiometer wiper to the specified value
     this->beginTransaction();
     this->wiper_value = wiper_value;

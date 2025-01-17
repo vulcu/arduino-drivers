@@ -34,11 +34,6 @@
 
   namespace AD5290 {
     namespace AD5290Types {
-      /*! @enum error types */
-      enum spi_error_type_t {
-        NO_ERROR = 0, 
-        NO_RESPONSE
-      };
     }
 
     class AD5290 {
@@ -65,21 +60,14 @@
         *
         * @details Initialize the device and write default config values to all registers
         * 
-        * TODO: this may not work due depending on design of AD5290 registers, needs testing
-        */
-        uint8_t get(void);
-
-        /*! @brief  Initialize the AD5290
-        *
-        * @details Initialize the device and write default config values to all registers
-        * 
         * @warning This will reset all device registers to the default configuration 
         */
         void set(uint8_t wiper_value);
+        void set(uint16_t wiper_value);
 
       private:
         const uint8_t spi_chip_select;
-        uint8_t wiper_value;
+        uint16_t wiper_value;
 
         /*! @brief  Initialize the AD5290
         *
