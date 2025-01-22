@@ -26,8 +26,8 @@
   #define DS1882_DEFAULT_I2CADDR  (0x28)
 
   // min/max volume level of theDS1882 potentiometer
-  #define DS1882_MINIMUM_VOL_LEVEL    ( 0U)
-  #define DS1882_MAXIMUM_VOL_LEVEL    (63U)
+  #define DS1882_MINIMUM_VOL_LEVEL    ((uint8_t) 0U)  // cast for Mbed compatibility
+  #define DS1882_MAXIMUM_VOL_LEVEL    ((uint8_t)63U)  // cast for Mbed compatibility
 
   // use volatile or non-volatile memory storage
   #define USE_VOLATILE_MEMORY_STORAGE ( 0U)
