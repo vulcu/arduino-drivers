@@ -33,22 +33,19 @@ namespace AD5290 {
     // configure SPI interface and begin the SPI transaction
     this->beginTransaction();
 
-    // set potentiometer value to midpoint value and read back to ensure SPI is working
-    // the data is transmitted MSB first, so 0xAA should be clocked back into receive buffer
-    uint16_t spi_received_value = SPI.transfer(0xAA00);
-
-    // repeat transfer to ensure that up to two daisy-chained devices are initialized correctly
-    SPI.transfer((uint16_t)AD5290_MIDPOINT_WIPER_VALUE + ((uint16_t)AD5290_MIDPOINT_WIPER_VALUE << 8));
+    // send readback value to ensure SPI is working, then set potentiometer value to midpoint value
+    SPI.transfer(0xAA);
+    uint16_t spi_received_value = SPI.transfer(AD5290_MIDPOINT_WIPER_VALUE);
 
     // end the SPI transaction and release the SPI bus
     this->endTransaction();
 
-    this->wiper_value = (uint16_t)AD5290_MIDPOINT_WIPER_VALUE;
+    this->wiper_value = AD5290_MIDPOINT_WIPER_VALUE;
 
     // use the first SPI transaction during init to check if communication is working
     if (lowByte(spi_received_value) != 0xAA) {
       // indicates that the recieved data did not match the first transmitted byte
-      // if two AD5290s are daisy chained, or AD5290 SDO is unused, this can be safely ignored
+      // if two AD5290s are daisy chained, or AD5290 CIPO is unused, this can be safely ignored
       return false;
     }
 
@@ -60,14 +57,6 @@ namespace AD5290 {
   void AD5290::set(uint8_t wiper_value) {
     // set digital potentiometer wiper to the specified value
     this->beginTransaction();
-    this->wiper_value = (uint16_t)wiper_value;
-    SPI.transfer(this->wiper_value);
-    this->endTransaction();
-  }
-  void AD5290::set(uint16_t wiper_value) {  
-    // set digital potentiometer wiper to the specified value
-    this->beginTransaction();
-    this->wiper_value = wiper_value;
     SPI.transfer(this->wiper_value);
     this->endTransaction();
   }

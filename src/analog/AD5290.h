@@ -28,9 +28,9 @@
   #define AD5290_SPI_DATAMODE     (SPI_MODE0)
 
   // min/max volume level of theDS1882 potentiometer
-  #define AD5290_MINIMUM_WIPER_VALUE  (  0U)
-  #define AD5290_MIDPOINT_WIPER_VALUE (127U)
-  #define AD5290_MAXIMUM_WIPER_VALUE  (255U)
+  #define AD5290_MINIMUM_WIPER_VALUE  ((uint8_t)  0U)
+  #define AD5290_MIDPOINT_WIPER_VALUE ((uint8_t)127U)
+  #define AD5290_MAXIMUM_WIPER_VALUE  ((uint8_t)255U)
 
   namespace AD5290 {
     namespace AD5290Types {
@@ -63,11 +63,10 @@
         * @warning This will reset all device registers to the default configuration 
         */
         void set(uint8_t wiper_value);
-        void set(uint16_t wiper_value);
 
       private:
         const uint8_t spi_chip_select;
-        uint16_t wiper_value;
+        uint8_t wiper_value;
 
         /*! @brief  Initialize the AD5290
         *
