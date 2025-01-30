@@ -56,6 +56,7 @@ namespace AD5290 {
   // set a signle potentiometer to a value between 0 [min] and 255 [max]
   void AD5290::set(uint8_t wiper_value) {
     // set digital potentiometer wiper to the specified value
+    this->wiper_value = wiper_value;
     this->beginTransaction();
     SPI.transfer(this->wiper_value);
     this->endTransaction();
