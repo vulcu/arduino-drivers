@@ -106,8 +106,7 @@ namespace DS1882 {
   // set the potentiometers to a value between 0 [min] and 63 [max]
   void DS1882::volume(uint8_t value, channels_t channel) {
     // if the value and channel are within allowable range
-    if ((value >= DS1882_MINIMUM_VOL_LEVEL) &&
-        (value <= DS1882_MAXIMUM_VOL_LEVEL)) {
+    if ((value <= DS1882_MAXIMUM_VOL_LEVEL)) {
       
       switch (channel) {
         case Mono_P0: {
