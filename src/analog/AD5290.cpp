@@ -22,10 +22,13 @@ namespace AD5290 {
   using namespace AD5290Types;
 
   // class constructor for AD5290 object
-  AD5290::AD5290(uint8_t spi_chip_select) : 
+  AD5290::AD5290(uint8_t spi_chip_select, uint32_t spi_bus_speed) : 
     spi_chip_select(spi_chip_select), 
-    wiper_value(0U) {
+    spi_bus_speed((spi_bus_speed > AD5290_SPI_SPEEDMAXIMUM) ? AD5290_SPI_SPEEDMAXIMUM : spi_bus_speed),
+    wiper_value(AD5290_MIDPOINT_WIPER_VALUE) {
       SPI.begin();
+      pinMode(this->spi_chip_select, OUTPUT);
+      digitalWrite(this->spi_chip_select, HIGH);
   }
 
   // initialize and configure the device
@@ -64,7 +67,7 @@ namespace AD5290 {
 
   // initialize the SPI interface and take ownership of SPI bus
   void AD5290::beginTransaction(void) {
-    SPI.beginTransaction(SPISettings(AD5290_SPI_SPEEDMAXIMUM, 
+    SPI.beginTransaction(SPISettings(this->spi_bus_speed, 
                                      AD5290_SPI_DATAORDER, 
                                      AD5290_SPI_DATAMODE));
 

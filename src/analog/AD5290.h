@@ -27,7 +27,7 @@
   #define AD5290_SPI_DATAORDER    (MSBFIRST)
   #define AD5290_SPI_DATAMODE     (SPI_MODE0)
 
-  // min/max volume level of theDS1882 potentiometer
+  // min/max volume level of the AD5290 potentiometer
   #define AD5290_MINIMUM_WIPER_VALUE  ((uint8_t)  0U)
   #define AD5290_MIDPOINT_WIPER_VALUE ((uint8_t)127U)
   #define AD5290_MAXIMUM_WIPER_VALUE  ((uint8_t)255U)
@@ -46,7 +46,7 @@
         * 
         * TODO: add support for daisy-chained AD5290 configuration
         */
-        AD5290(uint8_t spi_chip_select);
+        AD5290(uint8_t spi_chip_select, uint32_t spi_bus_speed);
 
         /*! @brief  Initialize the AD5290
         *
@@ -66,6 +66,7 @@
 
       private:
         const uint8_t spi_chip_select;
+        const uint32_t spi_bus_speed;
         uint8_t wiper_value;
 
         /*! @brief  Initialize the AD5290
