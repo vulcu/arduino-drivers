@@ -33,17 +33,17 @@ namespace AD5290 {
 
   // initialize and configure the device
   bool AD5290::init(void) {
+    this->wiper_value = AD5290_MIDPOINT_WIPER_VALUE;
+
     // configure SPI interface and begin the SPI transaction
     this->beginTransaction();
 
     // send readback value to ensure SPI is working, then set potentiometer value to midpoint value
     SPI.transfer(0xAA);
-    uint16_t spi_received_value = SPI.transfer(AD5290_MIDPOINT_WIPER_VALUE);
+    uint16_t spi_received_value = SPI.transfer(this->wiper_value);
 
     // end the SPI transaction and release the SPI bus
     this->endTransaction();
-
-    this->wiper_value = AD5290_MIDPOINT_WIPER_VALUE;
 
     // use the first SPI transaction during init to check if communication is working
     if (lowByte(spi_received_value) != 0xAA) {
