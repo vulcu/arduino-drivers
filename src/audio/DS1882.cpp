@@ -33,15 +33,15 @@ namespace DS1882 {
   // initialize and configure the device
   bool DS1882::init(void) {
     // toggle DS1882 reset line to ensure correct initialization
-    digitalWrite(enable_n, LOW);
+    digitalWrite(this->enable_n, LOW);
     delayMicroseconds(100);
-    digitalWrite(enable_n, HIGH);
+    digitalWrite(this->enable_n, HIGH);
     delayMicroseconds(100);
-    digitalWrite(enable_n, LOW);
+    digitalWrite(this->enable_n, LOW);
     delayMicroseconds(100);
     
     // Set Potentiometer 0 volume to zero
-    this->pWire->beginTransmission(i2c_address);
+    this->pWire->beginTransmission(this->i2c_address);
       this->pWire->write(0x00 + DS1882_MINIMUM_VOL_LEVEL);     // register address and data
     twi_error_type_t error = (twi_error_type_t)this->pWire->endTransmission();
     
@@ -51,7 +51,7 @@ namespace DS1882 {
     }
 
     // Set Potentiometer 1 volume to zero
-    this->pWire->beginTransmission(i2c_address);
+    this->pWire->beginTransmission(this->i2c_address);
       this->pWire->write(0x40 + DS1882_MINIMUM_VOL_LEVEL);     // register address and data
     this->pWire->endTransmission();
     
@@ -59,7 +59,7 @@ namespace DS1882 {
     const uint8_t configuration_register = 0x80 + (USE_VOLATILE_MEMORY_STORAGE << 2) + 
       (ENABLE_ZERO_CROSSING_DETECT << 1) + (POTENTIOMETER_CONFIG_OPTION - 1);
     
-    this->pWire->beginTransmission(i2c_address);
+    this->pWire->beginTransmission(this->i2c_address);
       this->pWire->write(configuration_register); // register address and data
     this->pWire->endTransmission();
 
@@ -69,12 +69,13 @@ namespace DS1882 {
 
   // enable the DS1882 by taking it out of standby (HIGH)
   void DS1882::enable(void) {
-    digitalWrite(enable_n, HIGH);
+    digitalWrite(this->enable_n, LOW);
   }
 
   // disable the DS1882 via the enable pin
   void DS1882::shutdown(void) {
-    digitalWrite(enable_n, LOW);
+    pinMode(this->enable_n, OUTPUT);
+    digitalWrite(this->enable_n, HIGH);
   }
 
   // mute the DS1882 by setting maximum attenuation
