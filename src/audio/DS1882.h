@@ -98,13 +98,13 @@
         *
         * @details Set both DS1882 channels to the minimum volume level (0)
         */
-        void mute(void);
+        bool mute(void);
 
         /*! @brief  Unmute the DS1882
         *
         * @details Set both DS1882 channels to their most recently set value
         */
-        void unmute(void);
+        bool unmute(void);
 
         /*! @brief  Set the DS1882 volume (aka potetiometer position)
         *
@@ -113,7 +113,15 @@
         * @param value    The desired volume setting (0-63)
         * @param channel  The channel to apply this setting to (using channels_t)
         */
-        void volume(uint8_t value, channels_t channel);
+        bool set(uint8_t value, channels_t channel);
+
+        /*! @brief  Get the DS1882 volume and config register data
+        *
+        * @details Get volume level of the DS1882 for both channels, and the device configuration
+        * 
+        * @param array    A pointer to a three-element uint8_t array
+        */
+        bool get(uint8_t *array, size_t array_size);
 
       private:
         const uint8_t i2c_address;

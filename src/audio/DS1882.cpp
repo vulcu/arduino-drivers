@@ -100,18 +100,19 @@ namespace DS1882 {
   }
 
   // set the potentiometers to a value between 0 [min] and 63 [max]
-  void DS1882::volume(uint8_t value, channels_t channel) {
+  bool DS1882::set(uint8_t value, channels_t channel) {
     // if the value and channel are within allowable range
     if ((value <= DS1882_MAXIMUM_VOL_LEVEL)) {
-      
+      twi_error_type_t error;
+
       switch (channel) {
         case Mono_P0: {
           channel_attenuation[0] = value;
 
           // Set Potentiometer 0 volume to current setting
           this->pWire->beginTransmission(i2c_address);
-            this->pWire->write(0x00 + channel_attenuation[0]);  // register address and data
-          this->pWire->endTransmission();
+            this->pWire->write(0x00 + channel_attenuation[0]);
+          error = (twi_error_type_t)this->pWire->endTransmission();
         }
         break;
 
@@ -120,26 +121,55 @@ namespace DS1882 {
 
           // Set Potentiometer 1 volume to current setting
           this->pWire->beginTransmission(i2c_address);
-            this->pWire->write(0x40 + channel_attenuation[1]);  // register address and data
-          this->pWire->endTransmission();
+            this->pWire->write(0x40 + channel_attenuation[1]);
+          error = (twi_error_type_t)this->pWire->endTransmission();
         }
         break;
 
         case Stereo: {
           memset(channel_attenuation, value, sizeof(channel_attenuation));
 
-          // Set Potentiometer 0 volume to current setting
+          // Set Potentiometers volume to current setting
           this->pWire->beginTransmission(i2c_address);
-            this->pWire->write(0x00 + channel_attenuation[0]);  // register address and data
-          this->pWire->endTransmission();
-
-          // Set Potentiometer 1 volume to current setting
-          this->pWire->beginTransmission(i2c_address);
-            this->pWire->write(0x40 + channel_attenuation[1]);  // register address and data
-          this->pWire->endTransmission();
+            this->pWire->write(0x00 + channel_attenuation[0]);  // Potentiometer 0
+            this->pWire->write(0x40 + channel_attenuation[1]);  // Potentiometer 1
+          error = (twi_error_type_t)this->pWire->endTransmission();
         }
         break;
       }
+
+      // use the TwoWire transaction to check if communication was successful
+      if (error == NACK_ADDRESS) {
+        return false;
+      }
+      return true;
     }
+  }
+
+  bool DS1882::get(uint8_t *array, size_t array_size) {
+    if (array_size != (size_t)3U) {
+      return false;
+    }
+
+    this->pWire->beginTransmission(this->i2c_address);
+    twi_error_type_t error = (twi_error_type_t)(this->pWire->endTransmission());
+
+    // use the TwoWire transaction to check if communication was successful
+    if (error == NACK_ADDRESS) {
+      return false;
+    }
+
+    uint8_t twi_read_index = 0;
+    this->pWire->requestFrom(this->i2c_address, (uint8_t)array_size);
+    delayMicroseconds(DS1882_TWIDELAY_MICROSEC);
+    while(this->pWire->available()) {
+      if (twi_read_index >= array_size) {
+        break;
+      }
+      array[twi_read_index] = (uint8_t)this->pWire->read();
+      twi_read_index++;
+    }
+
+    return true;
   }
 }
