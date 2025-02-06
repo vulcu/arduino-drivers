@@ -26,6 +26,7 @@ namespace DS1882 {
     i2c_address(i2c_address), 
     enable_n(enable_n), 
     channel_attenuation{0U} {
+    pinMode(this->enable_n, OUTPUT);
     this->shutdown();
     this->pWire = pWire;
   }
