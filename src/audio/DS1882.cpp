@@ -69,29 +69,34 @@ namespace DS1882 {
   }
 
   // mute the DS1882 by setting maximum attenuation
-  void DS1882::mute(void) {
-    // Set Potentiometer 0 volume to zero
+  bool DS1882::mute(void) {
+    // Set Potentiometers volume to zero
     this->pWire->beginTransmission(i2c_address);
-      this->pWire->write(0x00 + DS1882_MINIMUM_VOL_LEVEL);  // register address and data
+      this->pWire->write(0x00 + DS1882_MINIMUM_VOL_LEVEL);  // Potentiometer 0
+      this->pWire->write(0x40 + DS1882_MINIMUM_VOL_LEVEL);  // Potentiometer 1
     this->pWire->endTransmission();
-
-    // Set Potentiometer 1 volume to zero
-    this->pWire->beginTransmission(i2c_address);
-      this->pWire->write(0x40 + DS1882_MINIMUM_VOL_LEVEL);  // register address and data
-    this->pWire->endTransmission();
+    twi_error_type_t error = (twi_error_type_t)this->pWire->endTransmission();
+    
+    // use the TwoWire transaction to check if communication was successful
+    if (error == NACK_ADDRESS) {
+      return false;
+    }
+    return true;
   }
 
   // unmute the DS1882 amplifier by restoring previous attenuation
-  void DS1882::unmute(void) {
-    // Set Potentiometer 0 volume to current setting
+  bool DS1882::unmute(void) {
+    // Set Potentiometers volume to current setting
     this->pWire->beginTransmission(i2c_address);
-      this->pWire->write(0x00 + channel_attenuation[0]);  // register address and data
-    this->pWire->endTransmission();
-
-    // Set Potentiometer 1 volume to current setting
-    this->pWire->beginTransmission(i2c_address);
-      this->pWire->write(0x40 + channel_attenuation[1]);  // register address and data
-    this->pWire->endTransmission();
+      this->pWire->write(0x00 + channel_attenuation[0]);  // Potentiometer 0
+      this->pWire->write(0x40 + channel_attenuation[1]);  // Potentiometer 1
+    twi_error_type_t error = (twi_error_type_t)this->pWire->endTransmission();
+    
+    // use the TwoWire transaction to check if communication was successful
+    if (error == NACK_ADDRESS) {
+      return false;
+    }
+    return true;
   }
 
   // set the potentiometers to a value between 0 [min] and 63 [max]
