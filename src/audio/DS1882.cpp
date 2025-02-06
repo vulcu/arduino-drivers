@@ -40,29 +40,19 @@ namespace DS1882 {
     delayMicroseconds(100);
     digitalWrite(this->enable_n, LOW);
     delayMicroseconds(100);
+
     
-    // Set Potentiometer 0 volume to zero
+    
     this->pWire->beginTransmission(this->i2c_address);
-      this->pWire->write(0x00 + DS1882_MINIMUM_VOL_LEVEL);     // register address and data
+      this->pWire->write(DS1882_CONFIGURATION);             // Configuration
+      this->pWire->write(0x00 + DS1882_MINIMUM_VOL_LEVEL);  // Potentiometer 0
+      this->pWire->write(0x40 + DS1882_MINIMUM_VOL_LEVEL);  // Potentiometer 1
     twi_error_type_t error = (twi_error_type_t)this->pWire->endTransmission();
-    
-    // use the first TwoWire transaction during init to check if communication is working
+
+    // use the TwoWire transactions during init to check if communication was successful
     if (error == NACK_ADDRESS) {
       return false;
     }
-
-    // Set Potentiometer 1 volume to zero
-    this->pWire->beginTransmission(this->i2c_address);
-      this->pWire->write(0x40 + DS1882_MINIMUM_VOL_LEVEL);     // register address and data
-    this->pWire->endTransmission();
-    
-    // Combine configuration register options into one single value
-    const uint8_t configuration_register = 0x80 + (USE_VOLATILE_MEMORY_STORAGE << 2) + 
-      (ENABLE_ZERO_CROSSING_DETECT << 1) + (POTENTIOMETER_CONFIG_OPTION - 1);
-    
-    this->pWire->beginTransmission(this->i2c_address);
-      this->pWire->write(configuration_register); // register address and data
-    this->pWire->endTransmission();
 
     // initialization was successful
     return true;
