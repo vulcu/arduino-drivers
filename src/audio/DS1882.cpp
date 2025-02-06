@@ -146,7 +146,7 @@ namespace DS1882 {
     }
   }
 
-  bool DS1882::get(uint8_t *array, size_t array_size) {
+  bool DS1882::get(uint8_t* array, size_t array_size) {
     if (array_size != (size_t)3U) {
       return false;
     }
