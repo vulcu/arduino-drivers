@@ -65,7 +65,6 @@ namespace DS1882 {
 
   // disable the DS1882 via the enable pin
   void DS1882::shutdown(void) {
-    pinMode(this->enable_n, OUTPUT);
     digitalWrite(this->enable_n, HIGH);
   }
 
