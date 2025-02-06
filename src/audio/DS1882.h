@@ -23,7 +23,8 @@
   #include <Wire.h>
 
   // define the DS1882 I2C addresses, by default is hardware configured to 0x28
-  #define DS1882_DEFAULT_I2CADDR  (0x28)
+  #define DS1882_DEFAULT_I2CADDR   (0x28)
+  #define DS1882_TWIDELAY_MICROSEC ( 50U)
 
   // min/max volume level of theDS1882 potentiometer
   #define DS1882_MINIMUM_VOL_LEVEL    ((uint8_t) 0U)  // cast for Mbed compatibility
@@ -37,6 +38,9 @@
 
   // potentiometer configuration option, must be set to 1
   #define POTENTIOMETER_CONFIG_OPTION ( 1U)
+
+  // Combine configuration register options into one single value
+  #define DS1882_CONFIGURATION (0x80 + (USE_VOLATILE_MEMORY_STORAGE << 2) + (ENABLE_ZERO_CROSSING_DETECT << 1) + (POTENTIOMETER_CONFIG_OPTION - 1))
 
   namespace DS1882 {
     namespace DS1882Types {
