@@ -32,6 +32,10 @@
   #define AD5290_MIDPOINT_WIPER_VALUE ((uint8_t)127U)
   #define AD5290_MAXIMUM_WIPER_VALUE  ((uint8_t)255U)
 
+  // number of devices SPI daisy-chained together
+  #define AD5290_MINIMUM_DEVICE_COUNT ( 1U)
+  #define AD5290_MAXIMUM_DEVICE_COUNT (16U)
+
   namespace AD5290 {
     namespace AD5290Types {
     }
@@ -47,6 +51,7 @@
         * TODO: add support for daisy-chained AD5290 configuration
         */
         AD5290(uint8_t spi_chip_select, uint32_t spi_bus_speed);
+        AD5290(uint8_t spi_chip_select, uint32_t spi_bus_speed, uint8_t number_of_devices);
 
         /*! @brief  Initialize the AD5290
         *
@@ -63,11 +68,22 @@
         * @warning This will reset all device registers to the default configuration 
         */
         void set(uint8_t wiper_value);
+        bool set(uint8_t* array_values, size_t array_size);
+
+        /*! @brief  Initialize the AD5290
+        *
+        * @details Initialize the device and write default config values to all registers
+        * 
+        * @warning This will reset all device registers to the default configuration 
+        */
+        uint8_t get(void);
+        bool    get(uint8_t* array_values, size_t array_size);
 
       private:
         const uint8_t spi_chip_select;
         const uint32_t spi_bus_speed;
-        uint8_t wiper_value;
+        const uint8_t number_of_devices;
+        uint8_t wiper_data[];
 
         /*! @brief  Initialize the AD5290
         *
