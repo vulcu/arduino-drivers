@@ -79,30 +79,45 @@
         * @details Initialize the device and write default config values to all registers
         * 
         * @warning This will reset all device registers to the default configuration 
+        * 
+        * @param    void
+        * @returns  void
         */
         bool init(void);
 
         /*! @brief  Enable the DS1882
         *
         * @details Take the device out of hardware reset by setting 'enable_n' pin HIGH
+        * 
+        * @param    void
+        * @returns  void
         */
         void enable(void);
 
         /*! @brief  Shutdown the DS1882
         *
         * @details Put the device into hardware reset by setting 'enable_n' pin LOW
+        * 
+        * @param    void
+        * @returns  void
         */
         void shutdown(void);
 
         /*! @brief  Mute the DS1882
         *
         * @details Set both DS1882 channels to the minimum volume level (0)
+        * 
+        * @param    void
+        * @returns  bool  'True' if the operation was successful
         */
         bool mute(void);
 
         /*! @brief  Unmute the DS1882
         *
         * @details Set both DS1882 channels to their most recently set value
+        * 
+        * @param    void
+        * @returns  bool  'True' if the operation was successful
         */
         bool unmute(void);
 
@@ -110,8 +125,9 @@
         *
         * @details Set volume level of the DS1882, from 0-63 and for either or both channels
         * 
-        * @param value    The desired volume setting (0-63)
-        * @param channel  The channel to apply this setting to (using channels_t)
+        * @param    value     The desired volume setting (0-63)
+        * @param    channel   The channel to apply this setting to (using channels_t)
+        * @returns  bool      'True' if the register write was successful
         */
         bool set(uint8_t value, channels_t channel);
 
@@ -119,7 +135,8 @@
         *
         * @details Get volume level of the DS1882 for both channels, and the device configuration
         * 
-        * @param array    A pointer to a three-element uint8_t array
+        * @param    array   A pointer to a three-element uint8_t array
+        * @returns  bool    'True' if the register read was successful
         */
         bool get(uint8_t *array, size_t array_size);
 
