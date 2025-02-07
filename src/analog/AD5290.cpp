@@ -65,7 +65,7 @@ namespace AD5290 {
     // use the first SPI transaction during init to check if communication is working
     if (spi_received_value != 0xAA) {
       // indicates that the recieved data did not match the first transmitted byte
-      // if two AD5290s are daisy chained, or AD5290 CIPO is unused, this can be safely ignored
+      // if AD5290 CIPO back to microcontroller is unused, this can be safely ignored
       return false;
     }
 
@@ -74,22 +74,22 @@ namespace AD5290 {
   }
 
   // set a single potentiometer to a value between 0 [min] and 255 [max]
-  void AD5290::set(uint8_t wiper_data) {
+  void AD5290::set(uint8_t value) {
     // set digital potentiometer wiper to the specified value
-    this->wiper_data[0] = wiper_data;
+    this->wiper_data[0] = value;
     this->beginTransaction();
     SPI.transfer(this->wiper_data[0]);
     this->endTransaction();
   }
 
   // set multiple potentiometers to a values between 0 [min] and 255 [max]
-  bool AD5290::set(uint8_t* array_values, size_t array_size) {
+  bool AD5290::set(uint8_t* array, size_t array_size) {
     if (array_size != (size_t)this->number_of_devices) {
       return false;
     }
 
     // set an array of digital potentiometers to the specified value
-    memcpy(this->wiper_data, &array_values, array_size);
+    memcpy(this->wiper_data, &array, array_size);
     this->beginTransaction();
     for (uint8_t idx = 0; idx < this->number_of_devices; idx++) {
       SPI.transfer(this->wiper_data[idx]);
@@ -111,7 +111,7 @@ namespace AD5290 {
   }
 
   // read back the values of multiple potentiometers
-  bool AD5290::get(uint8_t* array_values, size_t array_size) {
+  bool AD5290::get(uint8_t* array, size_t array_size) {
     if ((uint8_t)array_size != this->number_of_devices) {
       return false;
     }
@@ -126,7 +126,7 @@ namespace AD5290 {
     }
     this->endTransaction();
     
-    memcpy(array_values, &this->wiper_data, array_size);
+    memcpy(array, &this->wiper_data, array_size);
 
     return true;
   }

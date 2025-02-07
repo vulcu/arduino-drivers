@@ -47,37 +47,58 @@
         * @details A more elaborate description of the constructor.
         * 
         * @param spi_chip_select The Arduino pin used as SPI Chip Select (CS) for the physical device
-        * 
-        * TODO: add support for daisy-chained AD5290 configuration
         */
         AD5290(uint8_t spi_chip_select, uint32_t spi_bus_speed);
         AD5290(uint8_t spi_chip_select, uint32_t spi_bus_speed, uint8_t number_of_devices);
 
-        /*! @brief  Initialize the AD5290
+        /*! @brief Initialize the AD5290
         *
         * @details Initialize the device and write default config values to all registers
         * 
-        * @warning This will reset all device registers to the default configuration 
+        * @warning This will reset all device registers to the default configuration
+        * 
+        * @param   void
+        * @returns bool   'True' if register initialization readback was successful
         */
         bool init(void);
 
-        /*! @brief  Initialize the AD5290
+        /*! @brief Set the wiper position of a single AD5290
         *
-        * @details Initialize the device and write default config values to all registers
+        * @details Write data to the wiper value register via SPI to a single AD5290
         * 
-        * @warning This will reset all device registers to the default configuration 
+        * @param   value    The value to programmably set the potentiometer value [0-255]
+        * @returns void
         */
-        void set(uint8_t wiper_value);
-        bool set(uint8_t* array_values, size_t array_size);
+        void set(uint8_t value);
 
-        /*! @brief  Initialize the AD5290
+        /*! @brief Set the wiper position of multiple daisy-chained AD5290
         *
-        * @details Initialize the device and write default config values to all registers
+        * @details Write data to the wiper value register via SPI to a multiple AD5290
         * 
-        * @warning This will reset all device registers to the default configuration 
+        * @param    array       An array of values to programmably set the potentiometer [0-255]
+        * @param    array_size  The size of the array as returned by sizeof()
+        * @returns  bool        'True' if the operation was successful
+        */
+        bool set(uint8_t* array, size_t array_size);
+
+        /*! @brief Get the wiper position of a single AD5290
+        *
+        * @details Read data via SPI from the wiper value register of a single AD5290
+        * 
+        * @param    void
+        * @returns  uint8_t   The register value read back from a single AD5290
         */
         uint8_t get(void);
-        bool    get(uint8_t* array_values, size_t array_size);
+
+        /*! @brief Get the wiper position of multiple daisy-chained AD5290
+        *
+        * @details Read data via SPI from the wiper value register of multiple daisy-chained AD5290
+        * 
+        * @param    array       An array to store values read from the daisy-chained AD5290
+        * @param    array_size  The size of the array as returned by sizeof()
+        * @returns  bool        'True' if the operation was successful
+        */
+        bool get(uint8_t* array, size_t array_size);
 
       private:
         const uint8_t spi_chip_select;
