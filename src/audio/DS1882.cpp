@@ -139,6 +139,11 @@ namespace DS1882 {
         error = (twi_error_type_t)this->pWire->endTransmission();
       }
       break;
+
+      default: {
+        error = NACK_ADDRESS;
+      }
+      break;
     }
 
     // use the TwoWire transaction to check if communication was successful
