@@ -141,6 +141,7 @@ namespace DS1882 {
       break;
 
       default: {
+        // set 'error' to NACK_ADDRESS so function still returns 'false'
         error = NACK_ADDRESS;
       }
       break;
